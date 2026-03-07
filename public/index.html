@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>21 Stones Accounting LLC — Time Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#060e1f;--navy-900:#0f2044;--navy-800:#162d5e;--navy-700:#1d3a78;
+  --navy-600:#254592;--navy-500:#3057ae;--navy-200:#a8bcdf;--navy-100:#dce6f5;--navy-50:#f0f4fb;
+  --gold-700:#8a6120;--gold-600:#a87830;--gold-500:#c9a84c;--gold-400:#d9bc72;
+  --gold-300:#e8d098;--gold-100:#faf5e8;
+  --white:#fff;--gray-50:#f8f9fc;--gray-100:#f0f2f8;--gray-200:#e2e6f0;
+  --gray-300:#c8cedf;--gray-400:#9aa3bc;--gray-500:#6b7594;--gray-600:#4a5270;
+  --gray-700:#2e3550;--gray-900:#111827;
+  --success:#1a6644;--success-light:#e8f5ee;--success-border:#b3d9c4;
+  --warning:#8a6120;--warning-light:#faf5e8;--warning-border:#e8d098;
+  --danger:#8b1a1a;--danger-light:#fdf0f0;--danger-border:#e8b3b3;
+  --info:#1a4466;--info-light:#e8f0fa;--info-border:#b3cceb;
+  --header-h:64px;--nav-h:46px;--r:8px;--rl:12px;--rxl:16px;
+  --sh-sm:0 1px 3px rgba(15,32,68,.08),0 1px 8px rgba(15,32,68,.04);
+  --sh:0 2px 8px rgba(15,32,68,.08),0 4px 20px rgba(15,32,68,.05);
+  --sh-lg:0 8px 32px rgba(15,32,68,.12),0 2px 8px rgba(15,32,68,.06);
+  --sh-xl:0 20px 60px rgba(15,32,68,.18),0 4px 16px rgba(15,32,68,.08);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;}input,select,textarea{font-family:inherit;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:400;height:var(--header-h);background:var(--navy-900);border-bottom:1px solid var(--navy-800);display:flex;align-items:center;padding:0 1.25rem;gap:.85rem;box-shadow:0 2px 12px rgba(6,14,31,.4);}
+.hdr-logo{width:38px;height:38px;background:linear-gradient(135deg,var(--gold-500),var(--gold-700));border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(201,168,76,.35);}
+.hdr-logo svg{width:20px;height:20px;}
+.hdr-brand{display:none;}
+@media(min-width:480px){.hdr-brand{display:block;}}
+.hdr-firm{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--white);letter-spacing:.02em;line-height:1.2;}
+.hdr-sys{font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--gold-400);letter-spacing:.14em;}
+.hdr-sp{flex:1;}
+.hdr-clock{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--navy-200);letter-spacing:.05em;text-align:right;line-height:1.7;display:none;}
+@media(min-width:700px){.hdr-clock{display:block;}}
+.user-pill{display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:40px;padding:.3rem .7rem .3rem .3rem;cursor:pointer;transition:all .2s;position:relative;}
+.user-pill:hover{background:rgba(255,255,255,.1);border-color:var(--gold-500);}
+.u-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.75rem;font-weight:700;color:var(--navy-900);flex-shrink:0;background:linear-gradient(135deg,var(--gold-400),var(--gold-600));}
+.u-info{display:none;}
+@media(min-width:560px){.u-info{display:block;}}
+.u-name{font-size:.75rem;font-weight:600;color:var(--white);line-height:1.2;white-space:nowrap;}
+.u-lvl{font-family:'IBM Plex Mono',monospace;font-size:.56rem;color:var(--gold-400);letter-spacing:.08em;text-transform:uppercase;}
+.u-chv{color:var(--navy-200);font-size:.65rem;transition:transform .2s;}
+.user-pill.open .u-chv{transform:rotate(180deg);}
+
+/* ── USER DROPDOWN ── */
+.udrop{position:fixed;top:calc(var(--header-h)+8px);right:1rem;width:270px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rl);box-shadow:var(--sh-xl);z-index:500;overflow:hidden;display:none;animation:dropIn .18s ease;}
+.udrop.open{display:block;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+.udrop-hdr{background:var(--navy-900);padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.udrop-title{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--gold-400);letter-spacing:.14em;text-transform:uppercase;}
+.udrop-close{background:none;border:none;color:var(--navy-200);font-size:.9rem;cursor:pointer;}
+.udrop-list{padding:.4rem;}
+.uopt{display:flex;align-items:center;gap:.65rem;padding:.6rem .7rem;border-radius:var(--r);cursor:pointer;transition:background .15s;border:1px solid transparent;}
+.uopt:hover{background:var(--gray-50);}
+.uopt.sel{background:var(--info-light);border-color:var(--info-border);}
+.uopt-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0;}
+.uopt-name{font-weight:600;font-size:.82rem;color:var(--gray-900);}
+.uopt-meta{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gray-500);letter-spacing:.05em;margin-top:1px;}
+.uopt-chk{margin-left:auto;color:var(--success);font-size:.8rem;flex-shrink:0;}
+
+/* ── NAV ── */
+.nav{background:var(--navy-950);border-bottom:1px solid rgba(255,255,255,.06);height:var(--nav-h);display:flex;overflow-x:auto;padding:0 1rem;scrollbar-width:none;gap:.05rem;}
+.nav::-webkit-scrollbar{display:none;}
+.ntab{display:flex;align-items:center;gap:.35rem;padding:0 .9rem;height:100%;font-size:.75rem;font-weight:500;color:var(--navy-200);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;flex-shrink:0;letter-spacing:.02em;}
+.ntab:hover{color:var(--white);}
+.ntab.active{color:var(--gold-400);border-bottom-color:var(--gold-500);}
+.nbadge{background:#c0392b;color:#fff;border-radius:20px;padding:1px 5px;font-size:.56rem;font-family:'IBM Plex Mono',monospace;min-width:16px;text-align:center;}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1360px;margin:0 auto;padding:1.25rem;}
+@media(min-width:768px){.wrap{padding:1.75rem;}}
+.page{display:none;}.page.active{display:block;animation:pgIn .22s ease;}
+@keyframes pgIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:.75rem;flex-wrap:wrap;}
+.ph-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:var(--navy-900);line-height:1.1;}
+.ph-sub{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-top:.2rem;}
+.ph-act{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+
+/* ── STATS ── */
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;margin-bottom:1.5rem;}
+@media(min-width:900px){.sg{grid-template-columns:repeat(4,1fr);}}
+.sc{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rl);padding:1.1rem 1.25rem;box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;}
+.sc:hover{box-shadow:var(--sh);transform:translateY(-1px);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.sc.cn::before{background:linear-gradient(90deg,var(--navy-700),var(--navy-500));}
+.sc.cg::before{background:linear-gradient(90deg,var(--gold-600),var(--gold-400));}
+.sc.cs::before{background:linear-gradient(90deg,var(--success),#27ae60);}
+.sc.cb::before{background:linear-gradient(90deg,var(--info),#2980b9);}
+.sc-icon{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-bottom:.75rem;}
+.sc-icon.cn{background:var(--info-light);}.sc-icon.cg{background:var(--warning-light);}.sc-icon.cs{background:var(--success-light);}.sc-icon.cb{background:var(--info-light);}
+.sc-lbl{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem;}
+.sc-val{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--navy-900);line-height:1;}
+.sc-det{font-size:.7rem;color:var(--gray-500);margin-top:.25rem;}
+
+/* ── TABLE ── */
+.tc{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rl);box-shadow:var(--sh-sm);overflow:hidden;}
+.tc.ga{border-top:3px solid var(--gold-500);}
+.ts{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:580px;}
+thead{background:linear-gradient(180deg,var(--navy-900),var(--navy-800));}
+th{font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:500;color:var(--gold-300);letter-spacing:.14em;text-transform:uppercase;padding:.8rem .9rem;text-align:left;white-space:nowrap;border-right:1px solid rgba(255,255,255,.04);}
+th:last-child{border-right:none;}
+tbody tr{border-bottom:1px solid var(--gray-100);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--navy-50);}
+td{padding:.8rem .9rem;font-size:.8rem;color:var(--gray-700);vertical-align:middle;}
+td.mn{font-family:'IBM Plex Mono',monospace;font-size:.73rem;color:var(--gray-600);}
+.tc-hdr{padding:.85rem 1.1rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;background:linear-gradient(180deg,var(--gray-50),var(--white));}
+.tc-title{font-weight:600;font-size:.88rem;color:var(--navy-900);display:flex;align-items:center;gap:.4rem;}
+.tc-ti{color:var(--gold-500);}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:.25rem;font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.05em;padding:.2rem .6rem;border-radius:20px;font-weight:500;white-space:nowrap;}
+.badge.draft{background:var(--gray-100);color:var(--gray-500);border:1px solid var(--gray-200);}
+.badge.pending{background:var(--warning-light);color:var(--warning);border:1px solid var(--warning-border);}
+.badge.approved{background:var(--success-light);color:var(--success);border:1px solid var(--success-border);}
+.badge.rejected{background:var(--danger-light);color:var(--danger);border:1px solid var(--danger-border);}
+.badge.transferred{background:var(--info-light);color:var(--info);border:1px solid var(--info-border);}
+.badge.billable{background:var(--warning-light);color:var(--gold-600);border:1px solid var(--warning-border);}
+.badge.internal{background:var(--gray-100);color:var(--gray-500);border:1px solid var(--gray-200);}
+.badge.employee{background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);}
+.badge.manager{background:var(--info-light);color:var(--info);border:1px solid var(--info-border);}
+.badge.partner{background:var(--warning-light);color:var(--gold-700);border:1px solid var(--warning-border);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.4rem;border:none;border-radius:var(--r);padding:.58rem 1rem;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.01em;line-height:1;}
+.btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none;}
+.btn-p{background:linear-gradient(135deg,var(--navy-700),var(--navy-900));color:#fff;box-shadow:0 2px 8px rgba(15,32,68,.25);}
+.btn-p:hover{background:linear-gradient(135deg,var(--navy-600),var(--navy-800));box-shadow:0 4px 14px rgba(15,32,68,.35);transform:translateY(-1px);}
+.btn-g{background:linear-gradient(135deg,var(--gold-500),var(--gold-700));color:#fff;box-shadow:0 2px 8px rgba(201,168,76,.3);}
+.btn-g:hover{background:linear-gradient(135deg,var(--gold-400),var(--gold-600));box-shadow:0 4px 14px rgba(201,168,76,.4);transform:translateY(-1px);}
+.btn-s{background:var(--white);color:var(--gray-700);border:1px solid var(--gray-300);box-shadow:0 1px 2px rgba(15,32,68,.06);}
+.btn-s:hover{background:var(--gray-50);border-color:var(--navy-300);}
+.btn-ok{background:linear-gradient(135deg,#1a6644,#155234);color:#fff;box-shadow:0 2px 8px rgba(26,102,68,.25);}
+.btn-ok:hover{box-shadow:0 4px 14px rgba(26,102,68,.35);transform:translateY(-1px);}
+.btn-d{background:var(--danger-light);color:var(--danger);border:1px solid var(--danger-border);}
+.btn-d:hover{background:#f5d5d5;}
+.btn-o{background:transparent;color:var(--navy-700);border:1px solid var(--navy-200);}
+.btn-o:hover{background:var(--info-light);border-color:var(--navy-500);}
+.bsm{padding:.32rem .7rem;font-size:.73rem;border-radius:4px;}
+.bxs{padding:.25rem .58rem;font-size:.68rem;border-radius:4px;}
+
+/* ── FORMS ── */
+.fg{margin-bottom:.9rem;}
+.fl{display:block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.35rem;font-weight:500;}
+.fc{width:100%;background:var(--white);border:1px solid var(--gray-300);border-radius:var(--r);padding:.6rem .85rem;font-size:.83rem;color:var(--gray-900);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
+.fc:focus{border-color:var(--navy-500);box-shadow:0 0 0 3px rgba(48,87,174,.12);}
+.fc::placeholder{color:var(--gray-400);}
+textarea.fc{resize:vertical;min-height:76px;line-height:1.5;}
+select.fc{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7594' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;padding-right:2.1rem;}
+.fr{display:grid;gap:.85rem;}.fr2{grid-template-columns:1fr 1fr;}.fr3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:500px){.fr2,.fr3{grid-template-columns:1fr;}}
+
+/* ── MODALS ── */
+.ov{position:fixed;inset:0;background:rgba(6,14,31,.65);backdrop-filter:blur(6px);z-index:600;display:none;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
+.ov.open{display:flex;}
+.modal{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rxl);width:100%;max-width:520px;box-shadow:var(--sh-xl);animation:mIn .22s cubic-bezier(.34,1.1,.64,1);margin:auto;overflow:hidden;}
+@keyframes mIn{from{opacity:0;transform:scale(.95) translateY(-10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.m-hdr{background:linear-gradient(135deg,var(--navy-900),var(--navy-800));padding:1.35rem 1.5rem;position:relative;}
+.m-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--white);letter-spacing:.01em;}
+.m-sub{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gold-400);letter-spacing:.12em;text-transform:uppercase;margin-top:.2rem;}
+.m-close{position:absolute;top:.9rem;right:.9rem;background:rgba(255,255,255,.1);border:none;color:var(--white);width:26px;height:26px;border-radius:50%;font-size:.82rem;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;}
+.m-close:hover{background:rgba(255,255,255,.2);}
+.m-body{padding:1.35rem 1.5rem;}
+.m-foot{padding:.9rem 1.5rem;border-top:1px solid var(--gray-100);display:flex;gap:.55rem;justify-content:flex-end;flex-wrap:wrap;background:var(--gray-50);}
+
+/* ── FILTERS ── */
+.fbar{display:flex;gap:.65rem;margin-bottom:1.1rem;flex-wrap:wrap;align-items:flex-end;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rl);padding:.9rem 1.1rem;box-shadow:0 1px 2px rgba(15,32,68,.05);}
+.ff{display:flex;flex-direction:column;gap:.28rem;}
+.ff label{font-family:'IBM Plex Mono',monospace;font-size:.57rem;color:var(--gray-500);letter-spacing:.1em;text-transform:uppercase;}
+.ff select,.ff input{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--r);padding:.48rem .7rem;font-size:.78rem;color:var(--gray-800);outline:none;transition:border-color .2s;min-width:115px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7594' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;padding-right:1.8rem;}
+.ff input{background-image:none;padding-right:.7rem;}
+.ff select:focus,.ff input:focus{border-color:var(--navy-400);}
+
+/* ── NOTICE ── */
+.notice{border-radius:var(--r);padding:.85rem 1rem;margin-bottom:1.1rem;display:flex;gap:.7rem;align-items:flex-start;font-size:.8rem;}
+.ni{font-size:.95rem;flex-shrink:0;margin-top:1px;}
+.nb{flex:1;}.nb-t{font-weight:600;margin-bottom:.15rem;}.nb-tx{opacity:.85;font-size:.78rem;line-height:1.5;}
+.notice.info{background:var(--info-light);color:var(--info);border:1px solid var(--info-border);}
+.notice.warn{background:var(--warning-light);color:var(--warning);border:1px solid var(--warning-border);}
+.notice.ok{background:var(--success-light);color:var(--success);border:1px solid var(--success-border);}
+
+/* ── LIVE SESSION ── */
+.live-bar{background:linear-gradient(135deg,var(--navy-900),var(--navy-800));border:1px solid var(--navy-700);border-radius:var(--rl);padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:center;justify-content:space-between;gap:.85rem;flex-wrap:wrap;box-shadow:0 4px 16px rgba(6,14,31,.25);}
+.live-dot{display:inline-block;width:7px;height:7px;background:#4ade80;border-radius:50%;margin-right:.35rem;box-shadow:0 0 0 3px rgba(74,222,128,.2);animation:lp 1.5s infinite;}
+@keyframes lp{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.2);}50%{box-shadow:0 0 0 6px rgba(74,222,128,0);}}
+.live-lbl{font-size:.83rem;font-weight:600;color:var(--white);}
+.live-cli{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--gold-300);margin-top:.12rem;}
+.live-t{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--gold-400);letter-spacing:.04em;}
+
+/* ── APPROVAL FLOW ── */
+.aflow{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;}
+.astep{display:flex;align-items:center;gap:.25rem;font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.04em;color:var(--gray-500);}
+.adot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0;}
+.adot.done{background:var(--success);color:#fff;}.adot.pend{background:var(--warning-light);color:var(--warning);border:1.5px solid var(--warning-border);}.adot.wait{background:var(--gray-100);color:var(--gray-400);border:1.5px solid var(--gray-200);}.adot.rej{background:var(--danger-light);color:var(--danger);border:1.5px solid var(--danger-border);}
+.aarr{color:var(--gray-300);font-size:.6rem;}
+
+/* ── ENTRY DETAIL ── */
+.edet{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--r);padding:1rem;display:grid;gap:.6rem;}
+.dr{display:flex;align-items:flex-start;gap:.7rem;}
+.dl{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gray-400);letter-spacing:.1em;text-transform:uppercase;min-width:82px;padding-top:.1rem;flex-shrink:0;}
+.dv{font-size:.8rem;color:var(--gray-800);font-weight:500;flex:1;}
+.dv.mn{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:400;}
+.dv.big{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--navy-900);}
+
+/* ── AVATAR COLORS ── */
+.avc0{background:linear-gradient(135deg,#0f2044,#254592);}.avc1{background:linear-gradient(135deg,#a87830,#c9a84c);color:var(--navy-900)!important;}
+.avc2{background:linear-gradient(135deg,#1a5c3a,#27ae60);}.avc3{background:linear-gradient(135deg,#5c1a1a,#c0392b);}
+.avc4{background:linear-gradient(135deg,#1a3a5c,#2980b9);}.avc5{background:linear-gradient(135deg,#5c3a1a,#d68910);}
+.avc6{background:linear-gradient(135deg,#3a1a5c,#8e44ad);}.avc7{background:linear-gradient(135deg,#1a4a4a,#17a589);}
+.avc8{background:linear-gradient(135deg,#3a3a1a,#b7950b);}.avc9{background:linear-gradient(135deg,#1a2a3a,#566573);}
+
+/* ── TRANSFER SUMMARY ── */
+.xsum{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin-bottom:1.1rem;}
+@media(min-width:600px){.xsum{grid-template-columns:repeat(3,1fr);}}
+.xst{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--rl);padding:.9rem 1.1rem;box-shadow:0 1px 2px rgba(15,32,68,.05);}
+.xst-l{font-family:'IBM Plex Mono',monospace;font-size:.57rem;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.28rem;}
+.xst-v{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--navy-900);line-height:1;}
+
+/* ── MISC ── */
+.emp-r{display:flex;align-items:center;gap:.65rem;}
+.emp-ri{flex:1;min-width:0;}
+.emp-rn{font-weight:600;font-size:.82rem;color:var(--gray-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.emp-rs{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--gray-500);letter-spacing:.04em;margin-top:1px;}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;color:#fff;flex-shrink:0;}
+.empty-st{text-align:center;padding:2.5rem 1rem;color:var(--gray-400);}
+.empty-st-i{font-size:2.2rem;opacity:.35;margin-bottom:.65rem;}
+.empty-st-t{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;}
+.hm{display:none;}@media(min-width:768px){.hm{display:table-cell;}}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:10px;}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:.35rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy-900);padding:1rem;}
+.login-box{background:var(--white);border-radius:var(--rxl);padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:var(--sh-xl);text-align:center;}
+.login-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--gold-500),var(--gold-700));border-radius:var(--rl);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;box-shadow:0 4px 16px rgba(201,168,76,.35);}
+.login-logo svg{width:30px;height:30px;}
+.login-firm{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--navy-900);margin-bottom:.25rem;}
+.login-sys{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--gray-500);letter-spacing:.12em;margin-bottom:2rem;}
+.login-err{background:var(--danger-light);color:var(--danger);border:1px solid var(--danger-border);border-radius:var(--r);padding:.65rem .9rem;font-size:.8rem;margin-bottom:1rem;display:none;}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="#0f2044" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 2v20M3 7l9 5 9-5" stroke="#0f2044" stroke-width="1.5"/></svg>
+    </div>
+    <div class="login-firm">21 Stones Accounting LLC</div>
+    <div class="login-sys">TIME MANAGEMENT SYSTEM</div>
+    <div id="loginErr" class="login-err"></div>
+    <div class="fg" style="text-align:left;">
+      <label class="fl">Employee Code</label>
+      <input type="text" class="fc" id="loginCode" placeholder="e.g. EMP-001" style="text-transform:uppercase;" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="fg" style="text-align:left;margin-bottom:1.5rem;">
+      <label class="fl">Password</label>
+      <input type="password" class="fc" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-p" style="width:100%;justify-content:center;" id="loginBtn" onclick="doLogin()">Sign In</button>
+    <div style="margin-top:1.25rem;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--gray-400);letter-spacing:.06em;line-height:1.8;">
+      DEFAULT CREDENTIALS:<br>
+      EMP-001 / emp001 &nbsp;·&nbsp; MGR-001 / mgr001<br>PTR-001 / ptr001
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="appScreen" style="display:none;">
+
+<header class="hdr">
+  <div class="hdr-logo">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="#0f2044" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 2v20M3 7l9 5 9-5" stroke="#0f2044" stroke-width="1.5"/></svg>
+  </div>
+  <div class="hdr-brand">
+    <div class="hdr-firm">21 Stones Accounting LLC</div>
+    <div class="hdr-sys">TIME MANAGEMENT SYSTEM</div>
+  </div>
+  <div class="hdr-sp"></div>
+  <div class="hdr-clock" id="hdrClock"></div>
+  <div class="user-pill" id="userPill" onclick="toggleUDrop()">
+    <div class="u-av" id="hdrAvatar"></div>
+    <div class="u-info">
+      <div class="u-name" id="hdrName">—</div>
+      <div class="u-lvl" id="hdrLevel">—</div>
+    </div>
+    <span class="u-chv">▾</span>
+  </div>
+</header>
+
+<div class="udrop" id="uDrop">
+  <div class="udrop-hdr">
+    <span class="udrop-title">Switch User</span>
+    <button class="udrop-close" onclick="closeUDrop()">✕</button>
+  </div>
+  <div id="uDropList" class="udrop-list"></div>
+</div>
+
+<nav class="nav" id="mainNav">
+  <div class="ntab active" onclick="nav('dashboard')" data-p="dashboard">◈ Dashboard</div>
+  <div class="ntab" onclick="nav('mytime')" data-p="mytime">◷ My Time</div>
+  <div class="ntab" onclick="nav('approvals')" data-p="approvals" id="navAp" style="display:none">
+    ✓ Approvals <span class="nbadge" id="apBadge" style="display:none">0</span>
+  </div>
+  <div class="ntab" onclick="nav('transfer')" data-p="transfer" id="navXf" style="display:none">⇒ Transfer</div>
+  <div class="ntab" onclick="nav('reports')" data-p="reports">≡ Reports</div>
+  <div class="ntab" onclick="nav('admin')" data-p="admin">⚙ Admin</div>
+  <div class="ntab" onclick="doLogout()" style="margin-left:auto;color:var(--danger-light);">⬡ Logout</div>
+</nav>
+
+<div class="wrap">
+
+<!-- DASHBOARD -->
+<div class="page active" id="pg-dashboard">
+  <div class="ph">
+    <div><div class="ph-title">Dashboard</div><div class="ph-sub" id="dashSub">TODAY'S OVERVIEW</div></div>
+    <div class="ph-act"><button class="btn btn-s bsm" onclick="exportCSV('all')">↓ Export CSV</button></div>
+  </div>
+  <div class="sg" id="statsRow"></div>
+  <div class="tc ga">
+    <div class="tc-hdr"><div class="tc-title"><span class="tc-ti">◈</span> Team Overview</div></div>
+    <div class="ts"><table>
+      <thead><tr><th>Employee</th><th>Code</th><th>Role</th><th class="hm">Dept</th><th>Today</th><th>This Week</th><th>Level</th></tr></thead>
+      <tbody id="dashTeam"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- MY TIME -->
+<div class="page" id="pg-mytime">
+  <div class="ph">
+    <div><div class="ph-title">My Time Entries</div><div class="ph-sub">LOG HOURS · CLIENT BILLING</div></div>
+    <button class="btn btn-p" onclick="openEntryModal()">+ Log Time</button>
+  </div>
+  <div id="liveBar" style="display:none;"></div>
+  <div class="tc ga">
+    <div class="tc-hdr"><div class="tc-title"><span class="tc-ti">◷</span> My Time Log</div></div>
+    <div class="ts"><table>
+      <thead><tr><th>Date</th><th>Client</th><th class="hm">Code</th><th>Hours</th><th class="hm">Description</th><th>Billable</th><th>Status</th><th>Approval</th><th>Actions</th></tr></thead>
+      <tbody id="myTimeTb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- APPROVALS -->
+<div class="page" id="pg-approvals">
+  <div class="ph">
+    <div><div class="ph-title">Approvals</div><div class="ph-sub" id="apSub">PENDING REVIEW</div></div>
+  </div>
+  <div id="apContent"></div>
+</div>
+
+<!-- TRANSFER -->
+<div class="page" id="pg-transfer">
+  <div class="ph">
+    <div><div class="ph-title">Transfer to Accounting</div><div class="ph-sub">FULLY APPROVED ENTRIES ONLY</div></div>
+  </div>
+  <div class="notice info">
+    <span class="ni">ℹ</span>
+    <div class="nb"><div class="nb-t">Transfer Protocol</div>
+    <div class="nb-tx">Only entries that have completed all required approval levels appear here. Once transferred, entries are locked and a CSV is generated for your accounting system.</div></div>
+  </div>
+  <div class="fbar">
+    <div class="ff"><label>Period</label><select id="xPeriod" onchange="loadTransfer()"><option value="week">This Week</option><option value="month">This Month</option><option value="all">All Approved</option></select></div>
+    <div class="ff"><label>Client</label><select id="xClient" onchange="loadTransfer()"><option value="">All Clients</option></select></div>
+    <div style="margin-left:auto;display:flex;gap:.5rem;align-self:flex-end;">
+      <button class="btn btn-s bsm" onclick="exportCSV('approved')">↓ Export CSV</button>
+      <button class="btn btn-g" onclick="doTransfer()" id="btnXfer" disabled>⇒ Transfer All to Accounting</button>
+    </div>
+  </div>
+  <div id="xContent"></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page" id="pg-reports">
+  <div class="ph">
+    <div><div class="ph-title">Reports</div><div class="ph-sub">FULL TIME LOG HISTORY</div></div>
+    <button class="btn btn-s bsm" onclick="exportCSV('all')">↓ Export CSV</button>
+  </div>
+  <div class="fbar">
+    <div class="ff"><label>Employee</label><select id="rEmp" onchange="loadReports()"><option value="">All Employees</option></select></div>
+    <div class="ff"><label>Client</label><select id="rCli" onchange="loadReports()"><option value="">All Clients</option></select></div>
+    <div class="ff"><label>Status</label><select id="rSts" onchange="loadReports()"><option value="">All</option><option value="draft">Draft</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="transferred">Transferred</option></select></div>
+    <div class="ff"><label>From</label><input type="date" id="rFrom" onchange="loadReports()"></div>
+    <div class="ff"><label>To</label><input type="date" id="rTo" onchange="loadReports()"></div>
+    <button class="btn btn-s bsm" onclick="rstRpt()" style="align-self:flex-end;">Reset</button>
+  </div>
+  <div class="tc ga"><div class="ts"><table>
+    <thead><tr><th>Employee</th><th>Code</th><th>Client</th><th class="hm">Client Code</th><th>Date</th><th>Hours</th><th class="hm">Description</th><th>Billable</th><th>Status</th><th>Flow</th></tr></thead>
+    <tbody id="rptTb"></tbody>
+  </table></div></div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="pg-admin">
+  <div class="ph">
+    <div><div class="ph-title">Administration</div><div class="ph-sub">EMPLOYEES & CLIENTS</div></div>
+    <div class="ph-act">
+      <button class="btn btn-p bsm" onclick="openEmpModal()">+ Employee</button>
+      <button class="btn btn-g bsm" onclick="openCliModal()">+ Client</button>
+    </div>
+  </div>
+  <div style="display:grid;gap:1.25rem;">
+    <div class="tc ga">
+      <div class="tc-hdr"><div class="tc-title"><span class="tc-ti">◈</span> Employees</div></div>
+      <div class="ts"><table>
+        <thead><tr><th>Full Name</th><th>Code</th><th>Role</th><th>Level</th><th class="hm">Dept</th><th class="hm">Email</th><th>Actions</th></tr></thead>
+        <tbody id="admEmpTb"></tbody>
+      </table></div>
+    </div>
+    <div class="tc ga">
+      <div class="tc-hdr"><div class="tc-title"><span class="tc-ti">◈</span> Clients</div></div>
+      <div class="ts"><table>
+        <thead><tr><th>Client Name</th><th>Code</th><th class="hm">Industry</th><th>Contact</th><th class="hm">Email</th><th>Actions</th></tr></thead>
+        <tbody id="admCliTb"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+</div><!-- /appScreen -->
+
+<!-- ── MODALS ── -->
+
+<!-- TIME ENTRY -->
+<div class="ov" id="ovEntry">
+  <div class="modal">
+    <div class="m-hdr"><div class="m-title" id="emTitle">Log Time</div><div class="m-sub">RECORD HOURS WORKED FOR A CLIENT</div><button class="m-close" onclick="closeEntry()">✕</button></div>
+    <div class="m-body">
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Date *</label><input type="date" class="fc" id="eDate"></div>
+        <div class="fg"><label class="fl">Client *</label><select class="fc" id="eClient"><option value="">— Select —</option></select></div>
+      </div>
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Start Time</label><input type="time" class="fc" id="eStart"></div>
+        <div class="fg"><label class="fl">End Time (auto-calc)</label><input type="time" class="fc" id="eEnd"></div>
+      </div>
+      <div class="fg"><label class="fl">Hours * (0.25–24)</label><input type="number" class="fc" id="eHrs" min="0.25" max="24" step="0.25" placeholder="e.g. 3.50"></div>
+      <div class="fg"><label class="fl">Work Description *</label><textarea class="fc" id="eDesc" placeholder="Describe the work performed..."></textarea></div>
+      <div class="fg"><label class="fl">Billable to Client?</label>
+        <select class="fc" id="eBill"><option value="yes">Yes — Billable</option><option value="no">No — Internal / Admin</option></select></div>
+      <div class="notice info" style="margin-bottom:0;"><span class="ni">ℹ</span><div class="nb"><div class="nb-tx">Employees: Manager → Partner. Managers: Partner only. Partners: self-approved.</div></div></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-s" onclick="closeEntry()">Cancel</button>
+      <button class="btn btn-o" onclick="saveDraft()">Save Draft</button>
+      <button class="btn btn-p" onclick="submitEntry()">Submit for Approval</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPROVAL REVIEW -->
+<div class="ov" id="ovAp">
+  <div class="modal">
+    <div class="m-hdr"><div class="m-title" id="apTitle">Review Entry</div><div class="m-sub" id="apSubM">APPROVAL REVIEW</div><button class="m-close" onclick="closeApModal()">✕</button></div>
+    <div class="m-body">
+      <div id="apDetail"></div>
+      <div class="fg" style="margin-top:.85rem;margin-bottom:0;"><label class="fl">Comments (optional)</label><textarea class="fc" id="apComment" placeholder="Add a note..."></textarea></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-s" onclick="closeApModal()">Cancel</button>
+      <button class="btn btn-d" onclick="processAp('rejected')">✕ Reject</button>
+      <button class="btn btn-ok" onclick="processAp('approved')">✓ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYEE -->
+<div class="ov" id="ovEmp">
+  <div class="modal">
+    <div class="m-hdr"><div class="m-title" id="empMTitle">Add Employee</div><div class="m-sub">TEAM MEMBER / SYSTEM USER</div><button class="m-close" onclick="closeEmpModal()">✕</button></div>
+    <div class="m-body">
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Full Name *</label><input type="text" class="fc" id="empName" placeholder="Sarah M. Johnson"></div>
+        <div class="fg"><label class="fl">Employee Code *</label><input type="text" class="fc" id="empCode" placeholder="EMP-001"></div>
+      </div>
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Role / Title *</label><input type="text" class="fc" id="empRole" placeholder="Senior Accountant"></div>
+        <div class="fg"><label class="fl">Department</label>
+          <select class="fc" id="empDept"><option>Accounting</option><option>Tax</option><option>Audit</option><option>Advisory</option><option>Administration</option><option>Management</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">System Level *</label>
+        <select class="fc" id="empLevel"><option value="employee">Employee — Manager then Partner approval</option><option value="manager">Manager — Partner approval only</option><option value="partner">Partner — self-approves</option></select></div>
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Email</label><input type="email" class="fc" id="empEmail" placeholder="name@21stones.com"></div>
+        <div class="fg"><label class="fl">Password</label><input type="text" class="fc" id="empPass" placeholder="Initial password"></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-s" onclick="closeEmpModal()">Cancel</button>
+      <button class="btn btn-p" onclick="saveEmp()">Save Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT -->
+<div class="ov" id="ovCli">
+  <div class="modal">
+    <div class="m-hdr"><div class="m-title" id="cliMTitle">Add Client</div><div class="m-sub">CLIENT DETAILS</div><button class="m-close" onclick="closeCliModal()">✕</button></div>
+    <div class="m-body">
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Client Name *</label><input type="text" class="fc" id="cliName" placeholder="Acme Corp LLC"></div>
+        <div class="fg"><label class="fl">Client Code *</label><input type="text" class="fc" id="cliCode" placeholder="CLT-001"></div>
+      </div>
+      <div class="fr fr2">
+        <div class="fg"><label class="fl">Industry</label>
+          <select class="fc" id="cliInd"><option>Real Estate</option><option>Healthcare</option><option>Technology</option><option>Retail</option><option>Manufacturing</option><option>Legal</option><option>Finance</option><option>Non-Profit</option><option>Construction</option><option>Other</option></select></div>
+        <div class="fg"><label class="fl">Contact Person</label><input type="text" class="fc" id="cliCont" placeholder="John Smith"></div>
+      </div>
+      <div class="fg" style="margin-bottom:0;"><label class="fl">Contact Email</label><input type="email" class="fc" id="cliEmail" placeholder="contact@client.com"></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-s" onclick="closeCliModal()">Cancel</button>
+      <button class="btn btn-g" onclick="saveCli()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+let CU = null;        // current user object
+let EMPS = [];        // all employees
+let CLIS = [];        // all clients
+let ENTRIES = [];     // current user's entries
+let AP_ENTRIES = [];  // pending approvals for me
+let ALL_ENTRIES = []; // for reports
+
+let _editEntryId = null;
+let _editEmpId   = null;
+let _editCliId   = null;
+let _reviewId    = null;
+let _liveSession = null;
+let _liveTimer   = null;
+let _clockIv     = null;
+
+// ──────────────────────────────────────────────
+// API LAYER
+// ──────────────────────────────────────────────
+const BASE = '';  // same origin
+const api = async (method, path, body=null) => {
+  const opts = { method, headers: {'Content-Type':'application/json'} };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(BASE + path, opts);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || 'Request failed');
+  return data;
+};
+
+// ──────────────────────────────────────────────
+// UTILS
+// ──────────────────────────────────────────────
+const todayISO  = () => new Date().toISOString().slice(0,10);
+const fmtDate   = d => { if(!d) return '—'; const x=new Date(d+'T12:00:00'); return x.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
+const fmtHrs    = h => { if(!h||h<=0) return '—'; const hh=Math.floor(h),mm=Math.round((h-hh)*60); return mm>0?`${hh}h ${String(mm).padStart(2,'0')}m`:`${hh}h 00m`; };
+const initials  = n => (n||'').split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+const avc       = id => { const i=EMPS.findIndex(e=>e.id===id); return `avc${Math.max(0,i)%10}`; };
+const getEmp    = id => EMPS.find(e=>e.id===id);
+const getCli    = id => CLIS.find(c=>c.id===id);
+const isMgr     = () => ['manager','partner'].includes(CU?.level);
+const isPtn     = () => CU?.level==='partner';
+
+const sbadge = s => {
+  const m={draft:'DRAFT',pending:'⏳ PENDING',approved:'✓ APPROVED',rejected:'✕ REJECTED',transferred:'⇒ TRANSFERRED'};
+  return `<span class="badge ${s}">${m[s]||s.toUpperCase()}</span>`;
+};
+
+const flowHtml = entry => {
+  const emp = getEmp(entry.employeeId);
+  if (!emp) return '';
+  const ma = entry.managerApproval, pa = entry.partnerApproval;
+  let h = '<div class="aflow">';
+  if (emp.level === 'employee') {
+    const cls = ma?.status==='approved'?'done':ma?.status==='rejected'?'rej':'pend';
+    const txt = ma?.status==='approved'?'✓':ma?.status==='rejected'?'✕':'M';
+    h += `<div class="astep"><div class="adot ${cls}">${txt}</div><span>Mgr</span></div><div class="aarr">›</div>`;
+  }
+  if (['employee','manager'].includes(emp.level)) {
+    const canStart = emp.level==='manager' || ma?.status==='approved';
+    const cls = pa?.status==='approved'?'done':pa?.status==='rejected'?'rej':canStart?'pend':'wait';
+    const txt = pa?.status==='approved'?'✓':pa?.status==='rejected'?'✕':'P';
+    h += `<div class="astep"><div class="adot ${cls}">${txt}</div><span>Ptr</span></div>`;
+  }
+  if (emp.level==='partner') {
+    const cls = pa?.status==='approved'?'done':'pend';
+    h += `<div class="astep"><div class="adot ${cls}">${pa?.status==='approved'?'✓':'P'}</div><span>Self</span></div>`;
+  }
+  return h+'</div>';
+};
+
+// ──────────────────────────────────────────────
+// LOGIN
+// ──────────────────────────────────────────────
+const doLogin = async () => {
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginErr');
+  const code = document.getElementById('loginCode').value.trim().toUpperCase();
+  const pass = document.getElementById('loginPass').value;
+  if (!code || !pass) { showErr(err,'Please enter your code and password.'); return; }
+  btn.innerHTML = '<span class="spin"></span>Signing in...';
+  btn.disabled = true;
+  try {
+    CU = await api('POST','/api/employees/login',{code,password:pass});
+    err.style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appScreen').style.display='block';
+    initApp();
+  } catch(e) {
+    showErr(err, 'Invalid code or password. Please try again.');
+  } finally {
+    btn.innerHTML='Sign In'; btn.disabled=false;
+  }
+};
+const showErr = (el,msg) => { el.textContent=msg; el.style.display='block'; };
+const doLogout = () => { CU=null; document.getElementById('appScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; document.getElementById('loginPass').value=''; };
+
+// ──────────────────────────────────────────────
+// INIT APP
+// ──────────────────────────────────────────────
+const initApp = async () => {
+  startClock();
+  updateHdrUser();
+  await Promise.all([loadEmps(), loadClis()]);
+  populateUserDrop();
+  loadDashboard();
+  loadMyTime();
+  if (isMgr()) loadApprovals();
+  nav('dashboard');
+};
+
+const loadEmps = async () => { EMPS = await api('GET','/api/employees'); };
+const loadClis = async () => { CLIS = await api('GET','/api/clients'); };
+
+// ──────────────────────────────────────────────
+// CLOCK
+// ──────────────────────────────────────────────
+const startClock = () => {
+  if (_clockIv) clearInterval(_clockIv);
+  const tick = () => {
+    const now = new Date();
+    const el = document.getElementById('hdrClock');
+    if (el) el.innerHTML = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})+'<br>'+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const ds = document.getElementById('dashSub');
+    if (ds) ds.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}).toUpperCase();
+  };
+  tick(); _clockIv = setInterval(tick,1000);
+};
+
+// ──────────────────────────────────────────────
+// HEADER USER
+// ──────────────────────────────────────────────
+const updateHdrUser = () => {
+  if (!CU) return;
+  const av = document.getElementById('hdrAvatar');
+  if (av) av.textContent = initials(CU.name);
+  const nm = document.getElementById('hdrName');
+  if (nm) nm.textContent = CU.name;
+  const lv = document.getElementById('hdrLevel');
+  if (lv) lv.textContent = CU.code+' · '+CU.level.toUpperCase();
+  document.getElementById('navAp').style.display = isMgr() ? '' : 'none';
+  document.getElementById('navXf').style.display = isPtn() ? '' : 'none';
+};
+
+// ──────────────────────────────────────────────
+// USER DROPDOWN
+// ──────────────────────────────────────────────
+const toggleUDrop = () => { const d=document.getElementById('uDrop'),p=document.getElementById('userPill'); if(d.classList.contains('open')){d.classList.remove('open');p.classList.remove('open');}else{populateUserDrop();d.classList.add('open');p.classList.add('open');} };
+const closeUDrop  = () => { document.getElementById('uDrop').classList.remove('open'); document.getElementById('userPill').classList.remove('open'); };
+const populateUserDrop = () => {
+  document.getElementById('uDropList').innerHTML = EMPS.map(emp=>`
+    <div class="uopt ${emp.id===CU?.id?'sel':''}" onclick="switchUser('${emp.id}','${emp.code}')">
+      <div class="uopt-av ${avc(emp.id)}">${initials(emp.name)}</div>
+      <div><div class="uopt-name">${emp.name}</div><div class="uopt-meta">${emp.code} · ${emp.level.toUpperCase()}</div></div>
+      ${emp.id===CU?.id?'<div class="uopt-chk">✓</div>':''}
+    </div>`).join('');
+};
+const switchUser = async (id, code) => {
+  closeUDrop();
+  const pass = prompt(`Enter password for ${code}:`);
+  if (!pass) return;
+  try {
+    CU = await api('POST','/api/employees/login',{code,password:pass});
+    updateHdrUser();
+    populateUserDrop();
+    loadDashboard(); loadMyTime();
+    if (isMgr()) loadApprovals();
+    updateApBadge();
+    nav('dashboard');
+  } catch(e) { alert('Invalid password.'); }
+};
+document.addEventListener('click', e => {
+  const d=document.getElementById('uDrop'), p=document.getElementById('userPill');
+  if (d.classList.contains('open')&&!d.contains(e.target)&&!p.contains(e.target)) closeUDrop();
+});
+
+// ──────────────────────────────────────────────
+// NAVIGATION
+// ──────────────────────────────────────────────
+const nav = (id) => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  const pg = document.getElementById('pg-'+id);
+  if (pg) pg.classList.add('active');
+  const tab = document.querySelector(`.ntab[data-p="${id}"]`);
+  if (tab) tab.classList.add('active');
+  if (id==='approvals') loadApprovals();
+  if (id==='transfer')  { populateXferClis(); loadTransfer(); }
+  if (id==='reports')   { populateRptFilters(); loadReports(); }
+  if (id==='admin')     { loadAdminEmps(); loadAdminClis(); }
+};
+
+// ──────────────────────────────────────────────
+// DASHBOARD
+// ──────────────────────────────────────────────
+const loadDashboard = async () => {
+  try {
+    const s = await api('GET','/api/stats');
+    document.getElementById('statsRow').innerHTML = `
+      <div class="sc cn"><div class="sc-icon cn">⏱</div><div class="sc-lbl">Today's Hours</div><div class="sc-val">${fmtHrs(s.todayHours)||'0h'}</div><div class="sc-det">All staff combined</div></div>
+      <div class="sc cg"><div class="sc-icon cg">⏳</div><div class="sc-lbl">Pending Approval</div><div class="sc-val">${s.pending}</div><div class="sc-det">Awaiting review</div></div>
+      <div class="sc cs"><div class="sc-icon cs">✓</div><div class="sc-lbl">Approved / Ready</div><div class="sc-val">${s.approved}</div><div class="sc-det">Ready to transfer</div></div>
+      <div class="sc cb"><div class="sc-icon cb">⇒</div><div class="sc-lbl">Transferred</div><div class="sc-val">${s.transferred}</div><div class="sc-det">Sent to accounting</div></div>`;
+
+    const tb = document.getElementById('dashTeam');
+    if (!s.teamToday.length) { tb.innerHTML=`<tr><td colspan="7"><div class="empty-st"><div class="empty-st-i">◈</div><div class="empty-st-t">NO EMPLOYEES YET</div></div></td></tr>`; return; }
+    tb.innerHTML = s.teamToday.map(emp=>`<tr>
+      <td><div class="emp-r"><div class="av ${avc(emp.id)}" style="width:30px;height:30px;font-size:.72rem;">${initials(emp.name)}</div><div class="emp-ri"><div class="emp-rn">${emp.name}</div><div class="emp-rs">${emp.role}</div></div></div></td>
+      <td class="mn">${emp.code}</td>
+      <td style="font-size:.8rem;">${emp.role}</td>
+      <td class="mn hm">${emp.department}</td>
+      <td class="mn" style="font-weight:700;color:var(--navy-800);">${fmtHrs(emp.today_hours)||'—'}</td>
+      <td class="mn">${fmtHrs(emp.week_hours)||'—'}</td>
+      <td><span class="badge ${emp.level}">${emp.level.toUpperCase()}</span></td>
+    </tr>`).join('');
+  } catch(e) { console.error(e); }
+};
+
+// ──────────────────────────────────────────────
+// MY TIME
+// ──────────────────────────────────────────────
+const loadMyTime = async () => {
+  if (!CU) return;
+  try {
+    ENTRIES = await api('GET',`/api/entries?employeeId=${CU.id}`);
+    renderMyTime();
+  } catch(e) { console.error(e); }
+};
+
+const renderMyTime = () => {
+  const lb = document.getElementById('liveBar');
+  if (_liveSession) {
+    const cl = getCli(_liveSession.clientId);
+    lb.style.display='block';
+    lb.innerHTML=`<div class="live-bar"><div><div class="live-lbl"><span class="live-dot"></span>Active Session</div><div class="live-cli">${cl?cl.name+' ('+cl.code+')':'—'}</div></div><div style="display:flex;align-items:center;gap:.85rem;"><div><div style="font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gold-300);letter-spacing:.1em;margin-bottom:.1rem;">ELAPSED</div><div class="live-t" id="liveTmr">00:00:00</div></div><button class="btn btn-d bsm" onclick="stopLive()">⏹ Stop</button></div></div>`;
+  } else lb.style.display='none';
+
+  const tb = document.getElementById('myTimeTb');
+  if (!ENTRIES.length) { tb.innerHTML=`<tr><td colspan="9"><div class="empty-st"><div class="empty-st-i">◷</div><div class="empty-st-t">NO ENTRIES YET — CLICK "+ LOG TIME"</div></div></td></tr>`; return; }
+  tb.innerHTML = ENTRIES.map(e=>{
+    const cl=getCli(e.clientId);
+    const canEd=e.status==='draft'||e.status==='rejected';
+    const canDel=e.status==='draft';
+    const canTmr=e.status==='draft'&&!_liveSession;
+    return `<tr>
+      <td class="mn">${fmtDate(e.date)}</td>
+      <td><div style="font-weight:600;font-size:.8rem;">${cl?cl.name:'—'}</div>${cl?`<div style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--gray-400);">${cl.code}</div>`:''}</td>
+      <td class="mn hm">${cl?cl.code:'—'}</td>
+      <td class="mn" style="font-weight:700;color:var(--navy-800);">${fmtHrs(e.hours)}</td>
+      <td class="hm" style="font-size:.75rem;color:var(--gray-500);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.description||''}">${e.description||'—'}</td>
+      <td><span class="badge ${e.billable==='yes'?'billable':'internal'}">${e.billable==='yes'?'BILLABLE':'INTERNAL'}</span></td>
+      <td>${sbadge(e.status)}</td>
+      <td>${flowHtml(e)}</td>
+      <td><div style="display:flex;gap:.3rem;flex-wrap:wrap;">
+        ${canEd?`<button class="btn btn-s bxs" onclick="openEntryModal('${e.id}')">Edit</button>`:''}
+        ${canDel?`<button class="btn btn-d bxs" onclick="delEntry('${e.id}')">Del</button>`:''}
+        ${canTmr?`<button class="btn btn-o bxs" onclick="startLive('${e.id}','${e.clientId}')">▶</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+};
+
+const startLive = (eid,cid) => {
+  _liveSession={entryId:eid,clientId:cid,start:new Date()};
+  if(_liveTimer) clearInterval(_liveTimer);
+  _liveTimer=setInterval(()=>{ const el=document.getElementById('liveTmr'); if(el&&_liveSession){const s=Math.floor((Date.now()-_liveSession.start)/1000);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}},1000);
+  renderMyTime();
+};
+const stopLive = async () => {
+  if(!_liveSession) return;
+  const h=Math.round((Date.now()-_liveSession.start)/3600000*4)/4;
+  try {
+    await api('PUT',`/api/entries/${_liveSession.entryId}`,{hours:h});
+  } catch(e){}
+  _liveSession=null; clearInterval(_liveTimer);
+  await loadMyTime(); loadDashboard();
+};
+
+// ──────────────────────────────────────────────
+// ENTRY MODAL
+// ──────────────────────────────────────────────
+const openEntryModal = (id=null) => {
+  _editEntryId=id;
+  document.getElementById('emTitle').textContent=id?'Edit Time Entry':'Log Time';
+  document.getElementById('eDate').value=todayISO();
+  document.getElementById('eStart').value=''; document.getElementById('eEnd').value='';
+  document.getElementById('eHrs').value=''; document.getElementById('eDesc').value=''; document.getElementById('eBill').value='yes';
+  document.getElementById('eClient').innerHTML='<option value="">— Select Client —</option>'+CLIS.map(c=>`<option value="${c.id}">${c.name} (${c.code})</option>`).join('');
+  if(id){const e=ENTRIES.find(x=>x.id===id);if(e){document.getElementById('eDate').value=e.date;document.getElementById('eHrs').value=e.hours||'';document.getElementById('eDesc').value=e.description||'';document.getElementById('eBill').value=e.billable||'yes';document.getElementById('eClient').value=e.clientId||'';}}
+  document.getElementById('ovEntry').classList.add('open');
+};
+const closeEntry = () => { document.getElementById('ovEntry').classList.remove('open'); _editEntryId=null; };
+document.getElementById('eEnd').addEventListener('change',()=>{
+  const sv=document.getElementById('eStart').value,ev=document.getElementById('eEnd').value;
+  if(sv&&ev){const[sh,sm]=sv.split(':').map(Number),[eh,em]=ev.split(':').map(Number),diff=((eh*60+em)-(sh*60+sm))/60;if(diff>0)document.getElementById('eHrs').value=Math.round(diff*4)/4;}
+});
+const valEntry = () => {
+  const c=document.getElementById('eClient').value,h=parseFloat(document.getElementById('eHrs').value),d=document.getElementById('eDesc').value.trim(),dt=document.getElementById('eDate').value;
+  if(!c){alert('Please select a client.');return null;}
+  if(!dt){alert('Please enter a date.');return null;}
+  if(!h||h<=0||h>24){alert('Please enter valid hours (0.25–24).');return null;}
+  if(!d){alert('Please enter a work description.');return null;}
+  return{clientId:c,hours:h,description:d,date:dt,billable:document.getElementById('eBill').value};
+};
+const saveDraft = async () => {
+  const v=valEntry();if(!v)return;
+  try {
+    if(_editEntryId) await api('PUT',`/api/entries/${_editEntryId}`,{...v,submit:false});
+    else await api('POST','/api/entries',{...v,employeeId:CU.id,submit:false});
+    closeEntry(); await loadMyTime(); loadDashboard(); updateApBadge();
+  } catch(e){alert(e.message);}
+};
+const submitEntry = async () => {
+  const v=valEntry();if(!v)return;
+  try {
+    if(_editEntryId) await api('PUT',`/api/entries/${_editEntryId}`,{...v,submit:true});
+    else await api('POST','/api/entries',{...v,employeeId:CU.id,submit:true});
+    closeEntry(); await loadMyTime(); loadDashboard(); updateApBadge();
+  } catch(e){alert(e.message);}
+};
+const delEntry = async (id) => {
+  if(!confirm('Delete this draft entry?'))return;
+  try{await api('DELETE',`/api/entries/${id}`);await loadMyTime();loadDashboard();updateApBadge();}catch(e){alert(e.message);}
+};
+
+// ──────────────────────────────────────────────
+// APPROVALS
+// ──────────────────────────────────────────────
+const updateApBadge = async () => {
+  if(!isMgr())return;
+  try{const p=await api('GET',`/api/entries/pending-approvals?approverId=${CU.id}`);const b=document.getElementById('apBadge');b.style.display=p.length>0?'':'none';b.textContent=p.length;}catch(e){}
+};
+const loadApprovals = async () => {
+  const cont=document.getElementById('apContent');
+  const sub=document.getElementById('apSub');
+  if(!isMgr()){cont.innerHTML='<div class="notice warn"><span class="ni">⚠</span><div class="nb"><div class="nb-t">No Access</div><div class="nb-tx">Switch to a Manager or Partner account to approve entries.</div></div></div>';return;}
+  sub.textContent=isPtn()?'PARTNER LEVEL — ALL ENTRIES':'MANAGER LEVEL — EMPLOYEE ENTRIES';
+  try{
+    AP_ENTRIES=await api('GET',`/api/entries/pending-approvals?approverId=${CU.id}`);
+    const b=document.getElementById('apBadge');b.style.display=AP_ENTRIES.length>0?'':'none';b.textContent=AP_ENTRIES.length;
+    if(!AP_ENTRIES.length){cont.innerHTML='<div class="tc"><div class="tc-hdr"></div><div class="empty-st" style="padding:2.5rem;"><div class="empty-st-i">✓</div><div class="empty-st-t">ALL CAUGHT UP — NO PENDING ENTRIES</div></div></div>';return;}
+    cont.innerHTML=`<div class="tc ga"><div class="tc-hdr"><div class="tc-title"><span class="tc-ti">⏳</span> Pending Approval (${AP_ENTRIES.length})</div></div><div class="ts"><table>
+      <thead><tr><th>Employee</th><th>Code</th><th>Date</th><th>Client</th><th class="hm">Client Code</th><th>Hours</th><th class="hm">Description</th><th>Billable</th><th>Flow</th><th>Action</th></tr></thead>
+      <tbody>${AP_ENTRIES.map(e=>{const emp=getEmp(e.employeeId),cl=getCli(e.clientId);return`<tr>
+        <td><div class="emp-r"><div class="av ${avc(e.employeeId)}" style="width:26px;height:26px;font-size:.6rem;">${initials(emp?.name||'')}</div><div class="emp-ri"><div class="emp-rn">${emp?.name||'—'}</div><div class="emp-rs">${emp?.role||''}</div></div></div></td>
+        <td class="mn">${emp?.code||'—'}</td>
+        <td class="mn">${fmtDate(e.date)}</td>
+        <td style="font-size:.8rem;font-weight:500;">${cl?.name||'—'}</td>
+        <td class="mn hm">${cl?.code||'—'}</td>
+        <td class="mn" style="font-weight:700;color:var(--navy-800);">${fmtHrs(e.hours)}</td>
+        <td class="hm" style="font-size:.75rem;color:var(--gray-500);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.description||'—'}</td>
+        <td><span class="badge ${e.billable==='yes'?'billable':'internal'}">${e.billable==='yes'?'BILLABLE':'INTERNAL'}</span></td>
+        <td>${flowHtml(e)}</td>
+        <td><button class="btn btn-p bsm" onclick="openApModal('${e.id}')">Review</button></td>
+      </tr>`;}).join('')}</tbody>
+    </table></div></div>`;
+  }catch(e){console.error(e);}
+};
+const openApModal = (id) => {
+  _reviewId=id;
+  const e=AP_ENTRIES.find(x=>x.id===id);if(!e)return;
+  const emp=getEmp(e.employeeId),cl=getCli(e.clientId);
+  document.getElementById('apTitle').textContent='Review — '+(emp?.name||'');
+  document.getElementById('apSubM').textContent=CU?.level==='manager'?'MANAGER APPROVAL':'PARTNER APPROVAL';
+  document.getElementById('apComment').value='';
+  document.getElementById('apDetail').innerHTML=`<div class="edet">
+    <div class="dr"><div class="dl">Employee</div><div class="dv"><strong>${emp?.name||'—'}</strong> <span style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--gray-400);">${emp?.code||''}</span></div></div>
+    <div class="dr"><div class="dl">Role</div><div class="dv">${emp?.role||'—'} · ${emp?.department||''}</div></div>
+    <div class="dr"><div class="dl">Client</div><div class="dv"><strong>${cl?.name||'—'}</strong> <span style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--gray-400);">${cl?.code||''}</span></div></div>
+    <div class="dr"><div class="dl">Date</div><div class="dv mn">${fmtDate(e.date)}</div></div>
+    <div class="dr"><div class="dl">Hours</div><div class="dv big">${fmtHrs(e.hours)}</div></div>
+    <div class="dr"><div class="dl">Billable</div><div class="dv"><span class="badge ${e.billable==='yes'?'billable':'internal'}">${e.billable==='yes'?'BILLABLE':'INTERNAL'}</span></div></div>
+    <div class="dr"><div class="dl">Description</div><div class="dv" style="line-height:1.5;">${e.description||'—'}</div></div>
+    <div class="dr"><div class="dl">Flow</div><div class="dv">${flowHtml(e)}</div></div>
+  </div>`;
+  document.getElementById('ovAp').classList.add('open');
+};
+const closeApModal = () => { document.getElementById('ovAp').classList.remove('open'); _reviewId=null; };
+const processAp = async (action) => {
+  try{
+    await api('POST',`/api/entries/${_reviewId}/approve`,{approverId:CU.id,action,comment:document.getElementById('apComment').value.trim()});
+    closeApModal(); await loadApprovals(); loadDashboard();
+  }catch(e){alert(e.message);}
+};
+
+// ──────────────────────────────────────────────
+// TRANSFER
+// ──────────────────────────────────────────────
+const populateXferClis = () => {
+  const s=document.getElementById('xClient');if(!s)return;
+  const cv=s.value;
+  s.innerHTML='<option value="">All Clients</option>'+CLIS.map(c=>`<option value="${c.id}"${c.id===cv?' selected':''}>${c.name} (${c.code})</option>`).join('');
+};
+let _xEntries = [];
+const loadTransfer = async () => {
+  if(!isPtn())return;
+  const period=document.getElementById('xPeriod')?.value||'week';
+  const clientId=document.getElementById('xClient')?.value||'';
+  let url=`/api/entries?status=approved`;
+  const today=todayISO();
+  const d=new Date(),day=d.getDay(),mon=new Date(d);
+  mon.setDate(d.getDate()-day+(day===0?-6:1));mon.setHours(0,0,0,0);
+  const ws=mon.toISOString().slice(0,10);
+  const ms=today.slice(0,7)+'-01';
+  if(period==='week') url+=`&from=${ws}`;
+  else if(period==='month') url+=`&from=${ms}`;
+  if(clientId) url+=`&clientId=${clientId}`;
+  try{
+    _xEntries=await api('GET',url);
+    const btn=document.getElementById('btnXfer');
+    if(btn) btn.disabled=_xEntries.length===0;
+    const cont=document.getElementById('xContent');
+    if(!_xEntries.length){cont.innerHTML='<div class="tc"><div class="empty-st" style="padding:2.5rem;"><div class="empty-st-i">⇒</div><div class="empty-st-t">NO APPROVED ENTRIES MATCH THE CURRENT FILTERS</div></div></div>';return;}
+    const totH=_xEntries.reduce((a,e)=>a+(e.hours||0),0);
+    const billH=_xEntries.filter(e=>e.billable==='yes').reduce((a,e)=>a+(e.hours||0),0);
+    cont.innerHTML=`<div class="xsum">
+      <div class="xst"><div class="xst-l">Entries Ready</div><div class="xst-v">${_xEntries.length}</div></div>
+      <div class="xst"><div class="xst-l">Total Hours</div><div class="xst-v">${fmtHrs(totH)}</div></div>
+      <div class="xst"><div class="xst-l">Billable Hours</div><div class="xst-v">${fmtHrs(billH)}</div></div>
+    </div>
+    <div class="tc ga"><div class="ts"><table>
+      <thead><tr><th>Employee</th><th>Emp. Code</th><th>Client</th><th>Client Code</th><th>Date</th><th>Hours</th><th class="hm">Description</th><th>Billable</th><th>Approvals</th></tr></thead>
+      <tbody>${_xEntries.map(e=>{const emp=getEmp(e.employeeId),cl=getCli(e.clientId);return`<tr>
+        <td style="font-weight:600;font-size:.8rem;">${emp?.name||'—'}</td>
+        <td class="mn">${emp?.code||'—'}</td>
+        <td style="font-size:.8rem;">${cl?.name||'—'}</td>
+        <td class="mn">${cl?.code||'—'}</td>
+        <td class="mn">${fmtDate(e.date)}</td>
+        <td class="mn" style="font-weight:700;color:var(--navy-800);">${fmtHrs(e.hours)}</td>
+        <td class="hm" style="font-size:.75rem;color:var(--gray-500);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.description||'—'}</td>
+        <td><span class="badge ${e.billable==='yes'?'billable':'internal'}">${e.billable==='yes'?'BILLABLE':'INTERNAL'}</span></td>
+        <td>${flowHtml(e)}</td>
+      </tr>`;}).join('')}</tbody>
+    </table></div></div>`;
+  }catch(e){console.error(e);}
+};
+const doTransfer = async () => {
+  if(!_xEntries.length)return;
+  if(!confirm(`Transfer ${_xEntries.length} entries to the accounting system?\n\nThis action cannot be undone.`))return;
+  try{
+    const r=await api('POST','/api/entries/transfer',{partnerId:CU.id,period:document.getElementById('xPeriod').value,clientId:document.getElementById('xClient').value||null});
+    buildTransferCSV(r.entries);
+    alert(`✓ Transfer Complete!\n\n${r.entriesTransferred} entries — ${fmtHrs(r.totalHours)}\nTransferred: ${new Date(r.transferredAt).toLocaleString()}\n\nCSV has been downloaded.`);
+    await loadTransfer(); loadDashboard();
+  }catch(e){alert(e.message);}
+};
+const buildTransferCSV = (entries) => {
+  const rows=[['21 STONES ACCOUNTING LLC — TIME TRANSFER EXPORT'],['Generated:',new Date().toLocaleString(),'By:',CU?.name||''],[''],
+    ['Employee Full Name','Employee Code','Role','Department','Client Name','Client Code','Date','Hours','Description','Billable','Manager Approval','Manager Approver','Partner Approval','Partner Approver','Transfer Date']];
+  entries.forEach(e=>{const emp=getEmp(e.employeeId),cl=getCli(e.clientId);
+    rows.push([emp?.name||'',emp?.code||'',emp?.role||'',emp?.department||'',cl?.name||'',cl?.code||'',e.date,e.hours||0,e.description||'',e.billable||'',
+      e.managerApproval?.status||'—',e.managerApproval?getEmp(e.managerApproval.by)?.name||'?':'',
+      e.partnerApproval?.status||'—',e.partnerApproval?getEmp(e.partnerApproval.by)?.name||'?':'',
+      e.transferredAt?new Date(e.transferredAt).toLocaleString():''
+    ]);
+  });
+  dlCSV(rows,'21stones-transfer-'+todayISO()+'.csv');
+};
+
+// ──────────────────────────────────────────────
+// REPORTS
+// ──────────────────────────────────────────────
+const populateRptFilters = () => {
+  const re=document.getElementById('rEmp'),rc=document.getElementById('rCli');if(!re)return;
+  const ce=re.value,cc=rc.value;
+  re.innerHTML='<option value="">All Employees</option>'+EMPS.map(e=>`<option value="${e.id}"${e.id===ce?' selected':''}>${e.name}</option>`).join('');
+  rc.innerHTML='<option value="">All Clients</option>'+CLIS.map(c=>`<option value="${c.id}"${c.id===cc?' selected':''}>${c.name}</option>`).join('');
+};
+const loadReports = async () => {
+  let url='/api/entries?x=1';
+  const ef=document.getElementById('rEmp')?.value,cf=document.getElementById('rCli')?.value,sf=document.getElementById('rSts')?.value,frm=document.getElementById('rFrom')?.value,to=document.getElementById('rTo')?.value;
+  if(ef) url+=`&employeeId=${ef}`;
+  if(cf) url+=`&clientId=${cf}`;
+  if(sf) url+=`&status=${sf}`;
+  if(frm) url+=`&from=${frm}`;
+  if(to) url+=`&to=${to}`;
+  try{
+    ALL_ENTRIES=await api('GET',url);
+    const tb=document.getElementById('rptTb');
+    if(!ALL_ENTRIES.length){tb.innerHTML=`<tr><td colspan="10"><div class="empty-st"><div class="empty-st-i">≡</div><div class="empty-st-t">NO RECORDS MATCH THE FILTERS</div></div></td></tr>`;return;}
+    tb.innerHTML=ALL_ENTRIES.map(e=>{const emp=getEmp(e.employeeId),cl=getCli(e.clientId);return`<tr>
+      <td><div class="emp-r"><div class="av ${avc(e.employeeId)}" style="width:24px;height:24px;font-size:.58rem;">${initials(emp?.name||'')}</div><div class="emp-ri"><div class="emp-rn">${emp?.name||'—'}</div></div></div></td>
+      <td class="mn">${emp?.code||'—'}</td>
+      <td style="font-size:.8rem;">${cl?.name||'—'}</td>
+      <td class="mn hm">${cl?.code||'—'}</td>
+      <td class="mn">${fmtDate(e.date)}</td>
+      <td class="mn" style="font-weight:700;color:var(--navy-800);">${fmtHrs(e.hours)}</td>
+      <td class="hm" style="font-size:.73rem;color:var(--gray-500);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.description||'—'}</td>
+      <td><span class="badge ${e.billable==='yes'?'billable':'internal'}">${e.billable==='yes'?'BILLABLE':'INTERNAL'}</span></td>
+      <td>${sbadge(e.status)}</td>
+      <td>${flowHtml(e)}</td>
+    </tr>`;}).join('');
+  }catch(e){console.error(e);}
+};
+const rstRpt = () => { ['rEmp','rCli','rSts','rFrom','rTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); loadReports(); };
+
+// ──────────────────────────────────────────────
+// ADMIN
+// ──────────────────────────────────────────────
+const loadAdminEmps = async () => {
+  await loadEmps();
+  const tb=document.getElementById('admEmpTb');
+  if(!EMPS.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty-st"><div class="empty-st-t">NO EMPLOYEES</div></div></td></tr>`;return;}
+  tb.innerHTML=EMPS.map(emp=>`<tr>
+    <td><div class="emp-r"><div class="av ${avc(emp.id)}" style="width:26px;height:26px;font-size:.6rem;">${initials(emp.name)}</div><div class="emp-ri"><div class="emp-rn">${emp.name}</div></div></div></td>
+    <td class="mn">${emp.code}</td>
+    <td style="font-size:.8rem;">${emp.role}</td>
+    <td><span class="badge ${emp.level}">${emp.level.toUpperCase()}</span></td>
+    <td class="hm" style="font-size:.75rem;color:var(--gray-500);">${emp.department}</td>
+    <td class="hm" style="font-size:.73rem;color:var(--gray-400);">${emp.email||'—'}</td>
+    <td><div style="display:flex;gap:.3rem;">
+      <button class="btn btn-s bxs" onclick="openEmpModal('${emp.id}')">Edit</button>
+      <button class="btn btn-d bxs" onclick="delEmp('${emp.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
+};
+const loadAdminClis = async () => {
+  await loadClis();
+  const tb=document.getElementById('admCliTb');
+  if(!CLIS.length){tb.innerHTML=`<tr><td colspan="6"><div class="empty-st"><div class="empty-st-t">NO CLIENTS</div></div></td></tr>`;return;}
+  tb.innerHTML=CLIS.map(c=>`<tr>
+    <td style="font-weight:600;font-size:.82rem;">${c.name}</td>
+    <td class="mn">${c.code}</td>
+    <td class="hm" style="font-size:.75rem;color:var(--gray-500);">${c.industry||'—'}</td>
+    <td style="font-size:.8rem;">${c.contact||'—'}</td>
+    <td class="hm" style="font-size:.73rem;color:var(--gray-400);">${c.email||'—'}</td>
+    <td><div style="display:flex;gap:.3rem;">
+      <button class="btn btn-s bxs" onclick="openCliModal('${c.id}')">Edit</button>
+      <button class="btn btn-d bxs" onclick="delCli('${c.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
+};
+
+// Employee Modal
+let _empM = null;
+const openEmpModal = (id=null) => {
+  _editEmpId=id; _empM=id?EMPS.find(e=>e.id===id):null;
+  document.getElementById('empMTitle').textContent=id?'Edit Employee':'Add Employee';
+  ['empName','empCode','empRole','empEmail','empPass'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('empDept').value='Accounting'; document.getElementById('empLevel').value='employee';
+  if(_empM){document.getElementById('empName').value=_empM.name;document.getElementById('empCode').value=_empM.code;document.getElementById('empRole').value=_empM.role;document.getElementById('empDept').value=_empM.department;document.getElementById('empLevel').value=_empM.level;document.getElementById('empEmail').value=_empM.email||'';}
+  document.getElementById('ovEmp').classList.add('open');
+};
+const closeEmpModal = () => { document.getElementById('ovEmp').classList.remove('open'); _editEmpId=null; };
+const saveEmp = async () => {
+  const name=document.getElementById('empName').value.trim(),code=document.getElementById('empCode').value.trim().toUpperCase(),role=document.getElementById('empRole').value.trim(),department=document.getElementById('empDept').value,level=document.getElementById('empLevel').value,email=document.getElementById('empEmail').value.trim(),password=document.getElementById('empPass').value.trim();
+  if(!name||!code||!role){alert('Name, code and role are required.');return;}
+  try{
+    if(_editEmpId) await api('PUT',`/api/employees/${_editEmpId}`,{name,code,role,department,level,email});
+    else await api('POST','/api/employees',{name,code,role,department,level,email,password:password||'changeme'});
+    closeEmpModal(); await loadAdminEmps(); populateUserDrop();
+  }catch(e){alert(e.message);}
+};
+const delEmp = async (id) => {
+  if(id===CU?.id){alert('Cannot delete the currently logged-in user.');return;}
+  if(!confirm('Remove this employee? Their time records will be preserved.'))return;
+  try{await api('DELETE',`/api/employees/${id}`);await loadAdminEmps();populateUserDrop();}catch(e){alert(e.message);}
+};
+
+// Client Modal
+const openCliModal = (id=null) => {
+  _editCliId=id; const c=id?CLIS.find(x=>x.id===id):null;
+  document.getElementById('cliMTitle').textContent=id?'Edit Client':'Add Client';
+  ['cliName','cliCode','cliCont','cliEmail'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('cliInd').value='Real Estate';
+  if(c){document.getElementById('cliName').value=c.name;document.getElementById('cliCode').value=c.code;document.getElementById('cliInd').value=c.industry||'Other';document.getElementById('cliCont').value=c.contact||'';document.getElementById('cliEmail').value=c.email||'';}
+  document.getElementById('ovCli').classList.add('open');
+};
+const closeCliModal = () => { document.getElementById('ovCli').classList.remove('open'); _editCliId=null; };
+const saveCli = async () => {
+  const name=document.getElementById('cliName').value.trim(),code=document.getElementById('cliCode').value.trim().toUpperCase(),industry=document.getElementById('cliInd').value,contact=document.getElementById('cliCont').value.trim(),email=document.getElementById('cliEmail').value.trim();
+  if(!name||!code){alert('Client name and code are required.');return;}
+  try{
+    if(_editCliId) await api('PUT',`/api/clients/${_editCliId}`,{name,code,industry,contact,email});
+    else await api('POST','/api/clients',{name,code,industry,contact,email});
+    closeCliModal(); await loadAdminClis();
+  }catch(e){alert(e.message);}
+};
+const delCli = async (id) => {
+  if(!confirm('Remove this client?'))return;
+  try{await api('DELETE',`/api/clients/${id}`);await loadAdminClis();}catch(e){alert(e.message);}
+};
+
+// ──────────────────────────────────────────────
+// EXPORT CSV
+// ──────────────────────────────────────────────
+const exportCSV = async (filter) => {
+  try{
+    const entries=await api('GET',filter==='approved'?'/api/entries?status=approved':'/api/entries');
+    const rows=[['21 STONES ACCOUNTING LLC — TIME EXPORT'],['Generated:',new Date().toLocaleString()],[''],
+      ['Employee Name','Employee Code','Role','Department','Client Name','Client Code','Date','Hours','Description','Billable','Status','Manager Approval','Manager By','Partner Approval','Partner By','Transferred At']];
+    entries.forEach(e=>{const emp=getEmp(e.employeeId),cl=getCli(e.clientId);
+      rows.push([emp?.name||'',emp?.code||'',emp?.role||'',emp?.department||'',cl?.name||'',cl?.code||'',e.date,e.hours||0,e.description||'',e.billable||'',e.status,
+        e.managerApproval?.status||'—',e.managerApproval?getEmp(e.managerApproval.by)?.name||'?':'',
+        e.partnerApproval?.status||'—',e.partnerApproval?getEmp(e.partnerApproval.by)?.name||'?':'',
+        e.transferredAt?new Date(e.transferredAt).toLocaleString():''
+      ]);
+    });
+    dlCSV(rows,'21stones-export-'+todayISO()+'.csv');
+  }catch(e){console.error(e);}
+};
+const dlCSV = (rows,fname) => {
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+};
+
+// Close modals on bg click
+['ovEntry','ovAp','ovEmp','ovCli'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});});
+</script>
+</body>
+</html>
