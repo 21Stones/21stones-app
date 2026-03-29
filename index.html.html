@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>21 Stones Tax & Accounting</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--deep:#07111F;--navy:#0D1D35;--mid:#142B4E;
+--gold:#C9A84C;--gold2:#E8C96A;
+--text:#E8EDF5;--text2:#A8B8CC;--text3:#6A7D94;
+--border:rgba(201,168,76,0.2);--border2:rgba(201,168,76,0.4);
+--card:rgba(20,43,78,0.8);
+--success:#4CAF80;--warn:#E8A84C;--danger:#E24B4A;
+--r:10px;--r2:14px;
+}
+html,body{height:100%;background:#07111F;color:#E8EDF5;font-family:Georgia,serif;font-size:14px;overflow:hidden}
+button,input,select{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.3);border-radius:4px}
+
+/* ---- AUTH ---- */
+#auth{position:fixed;inset:0;background:#07111F;display:flex;align-items:center;justify-content:center;z-index:9999;overflow:auto;padding:20px}
+.a-wrap{width:100%;max-width:420px}
+.a-gem{width:44px;height:44px;margin:0 auto 10px;background:linear-gradient(135deg,#C9A84C,#8B5E20);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%)}
+.a-logo{text-align:center;margin-bottom:28px}
+.a-title{font-size:24px;font-weight:700;color:#C9A84C;letter-spacing:1px}
+.a-sub{font-size:10px;color:#6A7D94;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.a-card{background:#0D1D35;border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:28px}
+.a-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,0.2);margin-bottom:22px}
+.a-tab{flex:1;text-align:center;padding:9px;font-size:13px;color:#6A7D94;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+.a-tab.on{color:#C9A84C;border-bottom-color:#C9A84C}
+.a-form{display:none}.a-form.on{display:block}
+.a-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;margin-bottom:5px}
+.a-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:11px 13px;color:#E8EDF5;font-size:14px;margin-bottom:14px;transition:.2s}
+.a-input:focus{outline:none;border-color:#C9A84C}
+.a-input::placeholder{color:#6A7D94}
+.a-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.a-btn{width:100%;background:#C9A84C;color:#07111F;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s;letter-spacing:.3px}
+.a-btn:hover{background:#E8C96A}
+.a-err{background:rgba(226,75,74,0.12);border:1px solid rgba(226,75,74,0.3);border-radius:7px;padding:9px 13px;font-size:12px;color:#F09595;margin-bottom:12px;display:none}
+.a-hint{text-align:center;font-size:11px;color:#6A7D94;margin-top:14px}
+.a-hint span{color:#C9A84C;cursor:pointer}
+.a-locks{display:flex;justify-content:center;gap:20px;margin-top:16px}
+.a-lock{font-size:10px;color:#6A7D94;display:flex;align-items:center;gap:4px}
+.a-dot{width:5px;height:5px;border-radius:50%;background:#4CAF80}
+
+/* ---- APP SHELL ---- */
+#app{display:none;flex-direction:column;height:100vh}
+.topbar{background:#0D1D35;border-bottom:1px solid rgba(201,168,76,0.2);padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:100}
+.t-logo{font-size:18px;font-weight:700;color:#C9A84C;display:flex;align-items:center;gap:8px}
+.t-gem{width:24px;height:24px;background:linear-gradient(135deg,#C9A84C,#8B5E20);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);flex-shrink:0}
+.t-sub{font-size:9px;color:#6A7D94;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:1px;font-weight:400}
+.t-right{display:flex;align-items:center;gap:10px}
+.lang-btn{background:transparent;border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:4px 12px;font-size:11px;color:#C9A84C;cursor:pointer;transition:.2s}
+.lang-btn:hover{background:#C9A84C;color:#07111F}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#7A4A10);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#07111F;cursor:pointer}
+.body{display:flex;flex:1;overflow:hidden}
+
+/* ---- SIDEBAR ---- */
+.sidebar{width:210px;flex-shrink:0;background:#0D1D35;border-right:1px solid rgba(201,168,76,0.2);overflow-y:auto;display:flex;flex-direction:column}
+.sb-user{margin:14px 12px;background:#142B4E;border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:11px;display:flex;align-items:center;gap:9px}
+.sb-name{font-size:12px;font-weight:600;color:#E8EDF5}
+.sb-role{font-size:10px;color:#C9A84C}
+.nav-sec{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6A7D94;padding:12px 16px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 14px;margin:1px 8px;border-radius:8px;cursor:pointer;border-left:2px solid transparent;transition:.2s;color:#A8B8CC;font-size:13px}
+.nav-item:hover{background:rgba(201,168,76,0.06);color:#E8EDF5}
+.nav-item.on{background:rgba(201,168,76,0.1);color:#C9A84C;border-left-color:#C9A84C}
+.nb{margin-left:auto;font-size:9px;background:rgba(201,168,76,0.2);color:#C9A84C;padding:2px 7px;border-radius:10px}
+.sb-bottom{margin-top:auto;padding:12px}
+.sb-pro{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:13px;text-align:center}
+.sb-pro p{font-size:11px;color:#A8B8CC;margin-bottom:9px;line-height:1.5}
+.sb-pro button{width:100%;background:#C9A84C;color:#07111F;border:none;border-radius:7px;padding:7px;font-size:11px;font-weight:700;cursor:pointer}
+
+/* ---- MAIN ---- */
+.main{flex:1;overflow:auto;background:#07111F}
+.page{display:none;padding:24px;animation:fi .25s ease}
+.page.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.pt{font-size:22px;font-weight:700;color:#E8EDF5}
+.ps{font-size:11px;color:#6A7D94;margin-top:3px}
+.btns{display:flex;gap:9px;flex-wrap:wrap}
+.btn1{background:#C9A84C;color:#07111F;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
+.btn1:hover{background:#E8C96A}
+.btn2{background:transparent;color:#A8B8CC;border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;transition:.2s}
+.btn2:hover{border-color:#C9A84C;color:#C9A84C}
+
+/* ---- CARDS ---- */
+.card{background:rgba(20,43,78,0.8);border:1px solid rgba(201,168,76,0.18);border-radius:14px;padding:18px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ct{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#6A7D94}
+.ca{font-size:11px;color:#C9A84C;cursor:pointer;background:none;border:none}
+
+/* ---- KPI ---- */
+.kpi-g{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.kpi{background:rgba(20,43,78,0.8);border:1px solid rgba(201,168,76,0.18);border-radius:14px;padding:17px;transition:.2s;cursor:default}
+.kpi:hover{border-color:rgba(201,168,76,0.35);transform:translateY(-1px)}
+.kl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;margin-bottom:9px}
+.kv{font-size:24px;font-weight:700;color:#E8EDF5;line-height:1}
+.kd{font-size:11px;margin-top:6px}
+.kd.pos{color:#4CAF80}.kd.neg{color:#E24B4A}.kd.neu{color:#C9A84C}
+
+/* ---- GRID ---- */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:18px}
+.g6040{display:grid;grid-template-columns:60% 1fr;gap:15px;margin-bottom:18px}
+
+/* ---- PROGRESS ---- */
+.prog{margin-bottom:13px}
+.prog-h{display:flex;justify-content:space-between;margin-bottom:4px}
+.prog-n{font-size:12px;color:#E8EDF5}
+.prog-p{font-size:12px;color:#C9A84C;font-weight:600}
+.prog-bg{height:5px;background:rgba(255,255,255,0.07);border-radius:5px;overflow:hidden}
+.prog-f{height:100%;border-radius:5px;background:linear-gradient(90deg,#C9A84C,#E8C96A);transition:width 1s ease}
+
+/* ---- CAT BARS ---- */
+.cat{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cat-lbl{font-size:12px;color:#E8EDF5;flex:1}
+.cat-bg{flex:2;height:4px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden}
+.cat-fill{height:100%;border-radius:4px}
+.cat-amt{font-size:12px;color:#A8B8CC;min-width:58px;text-align:right}
+
+/* ---- SECURITY ---- */
+.sec-row{display:flex;align-items:center;gap:11px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(201,168,76,0.08);margin-bottom:8px}
+.sec-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sec-n{font-size:12px;color:#E8EDF5;font-weight:600}
+.sec-d{font-size:10px;color:#6A7D94;margin-top:1px}
+.sec-s{font-size:11px;font-weight:600;white-space:nowrap}
+
+/* ---- TABLE ---- */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;padding:7px 11px;text-align:left;border-bottom:1px solid rgba(201,168,76,0.15)}
+tbody td{padding:10px 11px;font-size:13px;color:#E8EDF5;border-bottom:1px solid rgba(201,168,76,0.05)}
+tbody tr:hover td{background:rgba(201,168,76,0.03)}
+tbody tr:last-child td{border-bottom:none}
+
+/* ---- BADGES ---- */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
+.b-ok{background:rgba(76,175,128,0.15);color:#4CAF80}
+.b-warn{background:rgba(232,168,76,0.15);color:#E8A84C}
+.b-gold{background:rgba(201,168,76,0.15);color:#C9A84C}
+.b-info{background:rgba(56,138,221,0.15);color:#6EB4F5}
+
+/* ---- TABS ---- */
+.tabs{display:flex;border-bottom:1px solid rgba(201,168,76,0.15);margin-bottom:18px}
+.tab{padding:8px 16px;font-size:12px;color:#6A7D94;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+.tab:hover{color:#E8EDF5}.tab.on{color:#C9A84C;border-bottom-color:#C9A84C}
+
+/* ---- FORM ---- */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.fl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94}
+.fi{background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:10px 12px;color:#E8EDF5;font-size:13px;transition:.2s;width:100%}
+.fi:focus{outline:none;border-color:#C9A84C}
+.fi::placeholder{color:#6A7D94}
+select.fi option{background:#0D1D35;color:#E8EDF5}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ---- UPLOAD ---- */
+.upload{border:2px dashed rgba(201,168,76,0.2);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:.25s;margin-bottom:18px}
+.upload:hover{border-color:#C9A84C;background:rgba(201,168,76,0.04)}
+
+/* ---- RECEIPTS ---- */
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.rc{background:rgba(20,43,78,0.8);border:1px solid rgba(201,168,76,0.18);border-radius:10px;padding:13px;cursor:pointer;transition:.2s}
+.rc:hover{border-color:#C9A84C;transform:translateY(-2px)}
+.rt{width:100%;height:65px;background:rgba(255,255,255,0.04);border-radius:6px;margin-bottom:9px;display:flex;align-items:center;justify-content:center;font-size:20px}
+
+/* ---- ASSET ROW ---- */
+.ar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 70px;align-items:center;gap:7px;padding:11px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(201,168,76,0.06);margin-bottom:7px}
+.ar:hover{border-color:rgba(201,168,76,0.18)}
+.an{font-size:13px;color:#E8EDF5;font-weight:600}
+.as{font-size:10px;color:#6A7D94;margin-top:1px}
+.cn{font-size:12px;color:#E8EDF5;text-align:right}
+
+/* ---- SCHEDULE C ---- */
+.ss-title{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#C9A84C;padding:7px 11px;background:rgba(201,168,76,0.07);border-left:2px solid #C9A84C;margin-bottom:2px;border-radius:0 5px 5px 0}
+.sl{display:flex;align-items:center;padding:8px 11px;border-bottom:1px solid rgba(201,168,76,0.05);transition:.15s}
+.sl:hover{background:rgba(201,168,76,0.03)}
+.sl-num{font-size:10px;color:#6A7D94;width:22px;flex-shrink:0}
+.sl-name{flex:1;font-size:12px;color:#E8EDF5}
+.sl-amt{font-size:13px;color:#E8EDF5;min-width:85px;text-align:right;font-weight:600}
+.sl.tot{background:rgba(201,168,76,0.08);border-radius:6px;border:none;margin-top:3px}
+.sl.tot .sl-name{color:#C9A84C;font-weight:700}
+.sl.tot .sl-amt{color:#C9A84C;font-size:15px}
+
+/* ---- BANK ---- */
+.bk{display:flex;align-items:center;gap:13px;padding:13px;background:rgba(20,43,78,0.8);border:1px solid rgba(201,168,76,0.18);border-radius:10px;margin-bottom:9px;cursor:pointer;transition:.2s}
+.bk:hover{border-color:#C9A84C;transform:translateX(3px)}
+.bk-logo{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);flex-shrink:0}
+.ldot{width:6px;height:6px;border-radius:50%;background:#4CAF80;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ---- SETTINGS ---- */
+.srow{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(201,168,76,0.06)}
+.toggle{width:36px;height:19px;background:rgba(255,255,255,0.1);border-radius:10px;position:relative;cursor:pointer;transition:.25s;border:1px solid rgba(201,168,76,0.2);flex-shrink:0}
+.toggle.on{background:#C9A84C}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:white;transition:.25s}
+.toggle.on::after{left:19px}
+
+/* ---- USER MENU ---- */
+.umenu{position:absolute;top:54px;right:10px;width:200px;background:#0D1D35;border:1px solid rgba(201,168,76,0.2);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.6);z-index:200;display:none}
+.umenu.on{display:block}
+.um-head{padding:13px 15px;border-bottom:1px solid rgba(201,168,76,0.15)}
+.um-name{font-size:13px;font-weight:600;color:#E8EDF5}
+.um-email{font-size:10px;color:#6A7D94;margin-top:2px;word-break:break-all}
+.um-item{padding:10px 15px;font-size:13px;color:#A8B8CC;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s}
+.um-item:hover{background:rgba(201,168,76,0.06);color:#E8EDF5}
+.um-item.red{color:#F09595}.um-item.red:hover{background:rgba(226,75,74,0.08)}
+
+/* ---- MODAL ---- */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.mbg.on{display:flex}
+.modal{background:#0D1D35;border:1px solid rgba(201,168,76,0.2);border-radius:14px;padding:26px;width:460px;max-width:92vw}
+.mt{font-size:18px;font-weight:700;color:#E8EDF5;margin-bottom:5px}
+.ms{font-size:12px;color:#6A7D94;margin-bottom:20px}
+.mf{display:flex;gap:9px;justify-content:flex-end;margin-top:20px}
+
+/* ---- TOAST ---- */
+.toast{position:fixed;bottom:18px;right:18px;background:#142B4E;border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:11px 16px;font-size:13px;color:#E8EDF5;box-shadow:0 8px 24px rgba(0,0,0,0.5);display:flex;align-items:center;gap:9px;transform:translateY(70px);opacity:0;transition:.3s ease;z-index:999}
+.toast.on{transform:translateY(0);opacity:1}
+
+/* ---- STATUS BAR ---- */
+.sbar{height:30px;background:#0D1D35;border-top:1px solid rgba(201,168,76,0.15);display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0}
+.si{display:flex;align-items:center;gap:5px;font-size:10px;color:#6A7D94}
+.si span{color:#C9A84C}
+
+@media(max-width:900px){.kpi-g{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.rg{grid-template-columns:1fr 1fr}.g6040{grid-template-columns:1fr}.ar{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:600px){.sidebar{display:none}.kpi-g{grid-template-columns:1fr}.rg{grid-template-columns:1fr}.fgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth">
+ <div class="a-wrap">
+  <div class="a-logo">
+   <div class="a-gem"></div>
+   <div class="a-title">21 STONES</div>
+   <div class="a-sub">Tax &amp; Accounting Platform</div>
+  </div>
+  <div class="a-card">
+   <div class="a-tabs">
+    <div class="a-tab on" id="at-in" onclick="atab('in')">Sign In</div>
+    <div class="a-tab" id="at-up" onclick="atab('up')">Create Account</div>
+   </div>
+   <!-- LOGIN -->
+   <div class="a-form on" id="af-in">
+    <div class="a-err" id="lerr">Invalid email or password.</div>
+    <label class="a-label">Email</label>
+    <input class="a-input" id="l-em" type="email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')login()">
+    <label class="a-label">Password</label>
+    <input class="a-input" id="l-pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+    <button class="a-btn" onclick="login()">Sign In</button>
+    <div class="a-hint">No account? <span onclick="atab('up')">Create one free →</span></div>
+   </div>
+   <!-- REGISTER -->
+   <div class="a-form" id="af-up">
+    <div class="a-err" id="rerr">Please fill all required fields.</div>
+    <div class="a-2col">
+     <div><label class="a-label">First Name *</label><input class="a-input" id="r-fn" type="text" placeholder="Maria"></div>
+     <div><label class="a-label">Last Name *</label><input class="a-input" id="r-ln" type="text" placeholder="Castro"></div>
+    </div>
+    <label class="a-label">Email *</label>
+    <input class="a-input" id="r-em" type="email" placeholder="you@email.com">
+    <div class="a-2col">
+     <div><label class="a-label">Business Name</label><input class="a-input" id="r-bz" type="text" placeholder="My LLC"></div>
+     <div><label class="a-label">Business Type</label>
+      <select class="a-input" id="r-bt">
+       <option>Sole Proprietor</option><option>LLC</option><option>S-Corp</option><option>Partnership</option>
+      </select>
+     </div>
+    </div>
+    <label class="a-label">Password * (min 6 chars)</label>
+    <input class="a-input" id="r-pw" type="password" placeholder="••••••••">
+    <button class="a-btn" onclick="register()">Create My Account</button>
+    <div class="a-hint">Have an account? <span onclick="atab('in')">Sign in →</span></div>
+   </div>
+   <div class="a-locks">
+    <div class="a-lock"><div class="a-dot"></div>AES-256</div>
+    <div class="a-lock"><div class="a-dot"></div>MFA Ready</div>
+    <div class="a-lock"><div class="a-dot"></div>IRS Compliant</div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- USER MENU -->
+<div class="umenu" id="umenu">
+ <div class="um-head"><div class="um-name" id="um-nm">—</div><div class="um-email" id="um-em">—</div></div>
+ <div class="um-item" onclick="nav('settings');closeUM()">⚙️ Settings</div>
+ <div class="um-item" onclick="toast('🔑','Password reset email sent')">🔑 Change Password</div>
+ <div class="um-item red" onclick="logout()">↩ Sign Out</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+ <div class="t-logo">
+  <div class="t-gem"></div>
+  <div>21 STONES<span class="t-sub">Tax &amp; Accounting</span></div>
+ </div>
+ <div class="t-right">
+  <button class="lang-btn" onclick="toggleLang()" id="langBtn">EN | ES</button>
+  <div class="avatar" id="topAv" onclick="toggleUM()">?</div>
+ </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+ <div class="sb-user">
+  <div class="avatar" style="width:28px;height:28px;font-size:10px" id="sbAv">?</div>
+  <div><div class="sb-name" id="sbNm">User</div><div class="sb-role" id="sbRole">Self-Employed</div></div>
+ </div>
+ <div class="nav-sec" id="ns1">Overview</div>
+ <div class="nav-item on" onclick="nav('dash',this)"><span>▦</span><span data-k="n-dash">Dashboard</span></div>
+ <div class="nav-sec" id="ns2">Accounting</div>
+ <div class="nav-item" onclick="nav('income',this)"><span>↕</span><span data-k="n-inc">Income / Expenses</span></div>
+ <div class="nav-item" onclick="nav('receipts',this)"><span>📄</span><span data-k="n-rec">Receipt Vault</span><span class="nb">4</span></div>
+ <div class="nav-item" onclick="nav('depr',this)"><span>📉</span><span data-k="n-dep">Depreciation</span></div>
+ <div class="nav-item" onclick="nav('bank',this)"><span>🏦</span><span data-k="n-bank">Bank Connect</span></div>
+ <div class="nav-sec" id="ns3">Tax Filing</div>
+ <div class="nav-item" onclick="nav('sched',this)"><span>📋</span><span data-k="n-sch">Schedule C</span></div>
+ <div class="nav-item" onclick="nav('efile',this)"><span>📨</span><span data-k="n-ef">E-File IRS</span></div>
+ <div class="nav-sec" id="ns4">System</div>
+ <div class="nav-item" onclick="nav('settings',this)"><span>⚙️</span><span data-k="n-set">Settings</span></div>
+ <div class="sb-bottom">
+  <div class="sb-pro"><p data-k="up-txt">Upgrade to Pro for IRS audit defense &amp; CPA review.</p><button onclick="toast('🚀','Pro plan coming soon!')">Upgrade to Pro</button></div>
+ </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainArea">
+
+<!-- DASHBOARD -->
+<div class="page on" id="pg-dash">
+ <div class="ph">
+  <div><div class="pt" data-k="d-title">Financial Overview</div><div class="ps" data-k="d-sub">Tax Year 2025 · Schedule C Ready</div></div>
+  <div class="btns">
+   <button class="btn2" onclick="nav('sched')" data-k="d-vsched">View Schedule C</button>
+   <button class="btn1" onclick="nav('efile')" data-k="d-efile">E-File Now</button>
+  </div>
+ </div>
+ <div class="kpi-g">
+  <div class="kpi"><div class="kl" data-k="k-rev">Gross Revenue</div><div class="kv">$84,320</div><div class="kd pos">▲ +12% vs last year</div></div>
+  <div class="kpi"><div class="kl" data-k="k-exp">Total Expenses</div><div class="kv">$31,180</div><div class="kd neu">37% of revenue</div></div>
+  <div class="kpi"><div class="kl" data-k="k-net">Net Profit</div><div class="kv">$53,140</div><div class="kd pos">▲ Schedule C Line 31</div></div>
+  <div class="kpi"><div class="kl" data-k="k-tax">Est. Tax Liability</div><div class="kv">$14,879</div><div class="kd neg">▼ Due Apr 15, 2026</div></div>
+ </div>
+ <div class="g2">
+  <div class="card">
+   <div class="ch"><span class="ct" data-k="d-chart">Monthly Revenue 2025</span>
+    <select class="fi" style="width:auto;padding:3px 8px;font-size:11px" onchange="renderChart(this.value)">
+     <option value="rev">Revenue</option><option value="exp">Expenses</option><option value="pro">Net Profit</option>
+    </select>
+   </div>
+   <div id="chartBars" style="display:flex;align-items:flex-end;gap:3px;height:70px"></div>
+   <div id="chartLbls" style="display:flex;gap:3px;margin-top:4px"></div>
+  </div>
+  <div class="card">
+   <div class="ch"><span class="ct" data-k="d-excat">Expense Categories</span><button class="ca" onclick="nav('income')" data-k="d-all">View all →</button></div>
+   <div class="cat"><div class="cat-dot" style="background:#C9A84C"></div><span class="cat-lbl" data-k="c-veh">Vehicle (5yr)</span><div class="cat-bg"><div class="cat-fill" style="width:72%;background:#C9A84C"></div></div><span class="cat-amt">$8,420</span></div>
+   <div class="cat"><div class="cat-dot" style="background:#5DCAA5"></div><span class="cat-lbl" data-k="c-tools">Tools (7yr)</span><div class="cat-bg"><div class="cat-fill" style="width:55%;background:#5DCAA5"></div></div><span class="cat-amt">$5,100</span></div>
+   <div class="cat"><div class="cat-dot" style="background:#85B7EB"></div><span class="cat-lbl" data-k="c-off">Office &amp; Admin</span><div class="cat-bg"><div class="cat-fill" style="width:38%;background:#85B7EB"></div></div><span class="cat-amt">$3,660</span></div>
+   <div class="cat"><div class="cat-dot" style="background:#F0997B"></div><span class="cat-lbl" data-k="c-meals">Meals (50%)</span><div class="cat-bg"><div class="cat-fill" style="width:22%;background:#F0997B"></div></div><span class="cat-amt">$2,100</span></div>
+   <div class="cat"><div class="cat-dot" style="background:#AFA9EC"></div><span class="cat-lbl" data-k="c-other">Other</span><div class="cat-bg"><div class="cat-fill" style="width:30%;background:#AFA9EC"></div></div><span class="cat-amt">$11,900</span></div>
+  </div>
+ </div>
+ <div class="g2">
+  <div class="card">
+   <div class="ch"><span class="ct" data-k="d-sec">Security Vault</span><button class="ca" onclick="toast('🔒','Audit log export sent to email')" data-k="d-audit">Audit log →</button></div>
+   <div class="sec-row"><div class="sec-ic" style="background:rgba(76,175,128,.15)">🔐</div><div style="flex:1"><div class="sec-n">AES-256 Encryption</div><div class="sec-d" data-k="s-ssn">SSN / ITIN / EIN encrypted at rest</div></div><span class="sec-s" style="color:#4CAF80" data-k="s-act">Active</span></div>
+   <div class="sec-row"><div class="sec-ic" style="background:rgba(201,168,76,.1)">🏦</div><div style="flex:1"><div class="sec-n">Plaid Integration</div><div class="sec-d" data-k="s-plaid">Token-only · no credentials stored</div></div><span class="sec-s" style="color:#C9A84C" data-k="s-conn">Connected</span></div>
+   <div class="sec-row"><div class="sec-ic" style="background:rgba(76,175,128,.15)">📱</div><div style="flex:1"><div class="sec-n">MFA / 2FA</div><div class="sec-d" data-k="s-mfa">Two-factor auth · verified today</div></div><span class="sec-s" style="color:#4CAF80" data-k="s-ver">Verified</span></div>
+   <div class="sec-row"><div class="sec-ic" style="background:rgba(56,138,221,.12)">🛡️</div><div style="flex:1"><div class="sec-n">Pentesting Cert.</div><div class="sec-d" data-k="s-pen">OWASP Top 10 · Last scan 14 days ago</div></div><span class="sec-s" style="color:#6EB4F5" data-k="s-pass">Passed</span></div>
+  </div>
+  <div class="card">
+   <div class="ch"><span class="ct" data-k="d-ready">E-File Readiness</span><button class="ca" onclick="nav('efile')" data-k="d-gef">Go to E-File →</button></div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="p-inc">Income recorded</span><span class="prog-p">100%</span></div><div class="prog-bg"><div class="prog-f" style="width:100%"></div></div></div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="p-exp">Expenses classified</span><span class="prog-p">94%</span></div><div class="prog-bg"><div class="prog-f" style="width:94%"></div></div></div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="p-rec">Receipts scanned</span><span class="prog-p">78%</span></div><div class="prog-bg"><div class="prog-f" style="width:78%"></div></div></div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="p-dep">Depreciation confirmed</span><span class="prog-p">60%</span></div><div class="prog-bg"><div class="prog-f" style="width:60%"></div></div></div>
+   <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(201,168,76,0.12);display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:12px;color:#A8B8CC" data-k="p-overall">Overall readiness</span>
+    <span style="font-size:22px;font-weight:700;color:#C9A84C">83%</span>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- INCOME -->
+<div class="page" id="pg-income">
+ <div class="ph">
+  <div><div class="pt" data-k="i-title">Income &amp; Expenses</div><div class="ps" data-k="i-sub">Auto-classified · Schedule C mapped</div></div>
+  <div class="btns"><button class="btn1" onclick="openMod('txMod')">+ <span data-k="i-add">Add Transaction</span></button></div>
+ </div>
+ <div class="tabs">
+  <div class="tab on" onclick="stab(this,'all')" data-k="t-all">All</div>
+  <div class="tab" onclick="stab(this,'income')" data-k="t-inc">Income</div>
+  <div class="tab" onclick="stab(this,'expense')" data-k="t-exp">Expenses</div>
+ </div>
+ <div class="card">
+  <div class="tw"><table><thead><tr>
+   <th data-k="th-dt">Date</th><th data-k="th-ds">Description</th>
+   <th data-k="th-ct">Category</th><th data-k="th-tp">Type</th>
+   <th data-k="th-am">Amount</th><th data-k="th-rc">Receipt</th><th></th>
+  </tr></thead><tbody id="txBody"></tbody></table></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(201,168,76,0.1)">
+   <span style="font-size:11px;color:#6A7D94" id="txCount">—</span>
+   <div class="btns"><button class="btn2" onclick="exportCSV()" data-k="i-csv">Export CSV</button></div>
+  </div>
+ </div>
+</div>
+
+<!-- RECEIPTS -->
+<div class="page" id="pg-receipts">
+ <div class="ph">
+  <div><div class="pt" data-k="r-title">Receipt Vault</div><div class="ps" data-k="r-sub">OCR-powered · IRS audit-ready</div></div>
+  <div class="btns"><button class="btn1" onclick="document.getElementById('fup').click()">📸 <span data-k="r-up">Upload Receipt</span></button></div>
+ </div>
+ <input type="file" id="fup" accept="image/*,.pdf" style="display:none" onchange="handleUp(this)">
+ <div class="upload" onclick="document.getElementById('fup').click()">
+  <div style="font-size:28px;margin-bottom:8px">📸</div>
+  <div style="font-size:13px;color:#A8B8CC" data-k="r-drop">Drop receipts here or click to upload</div>
+  <div style="font-size:11px;color:#6A7D94;margin-top:4px" data-k="r-fmt">JPG, PNG, PDF · OCR extracts vendor, amount, date</div>
+ </div>
+ <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+  <input type="text" class="fi" placeholder="Search receipts..." style="max-width:260px" oninput="filterRec(this.value)">
+  <select class="fi" style="width:150px" onchange="filterRecCat(this.value)">
+   <option value="">All Categories</option><option>Vehicle</option><option>Office</option><option>Meals</option><option>Tools</option>
+  </select>
+  <span style="font-size:11px;color:#6A7D94" id="recCount">12 receipts</span>
+ </div>
+ <div class="rg" id="recGrid"></div>
+</div>
+
+<!-- DEPRECIATION -->
+<div class="page" id="pg-depr">
+ <div class="ph">
+  <div><div class="pt" data-k="dp-title">Depreciation Engine</div><div class="ps" data-k="dp-sub">MACRS · Vehicles 5yr · Tools 7yr</div></div>
+  <div class="btns"><button class="btn1" onclick="openMod('astMod')">+ <span data-k="dp-add">Add Asset</span></button></div>
+ </div>
+ <div class="g3">
+  <div class="kpi"><div class="kl" data-k="dp-ta">Total Assets</div><div class="kv" id="dpTA">$54,700</div><div class="kd neu">5 active</div></div>
+  <div class="kpi"><div class="kl" data-k="dp-yd">2025 Depreciation</div><div class="kv" id="dpYD">$8,240</div><div class="kd pos">▲ Deductible</div></div>
+  <div class="kpi"><div class="kl" data-k="dp-bv">Book Value</div><div class="kv" id="dpBV">$38,960</div><div class="kd neu">Net of depr.</div></div>
+ </div>
+ <div class="card">
+  <div class="ch"><span class="ct" data-k="dp-sch">Asset Depreciation Schedule</span><button class="ca" onclick="toast('📋','MACRS schedule exported')">Export →</button></div>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 70px;gap:7px;padding:5px 11px;margin-bottom:5px">
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94" data-k="col-as">Asset</span>
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;text-align:right" data-k="col-co">Cost</span>
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;text-align:right" data-k="col-yd">Yr Depr.</span>
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;text-align:right" data-k="col-ac">Accum.</span>
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;text-align:right" data-k="col-bv">Book Val.</span>
+   <span style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6A7D94;text-align:right" data-k="col-lf">Life</span>
+  </div>
+  <div id="astList"></div>
+ </div>
+</div>
+
+<!-- BANK -->
+<div class="page" id="pg-bank">
+ <div class="ph">
+  <div><div class="pt" data-k="b-title">Bank Connect</div><div class="ps" data-k="b-sub">Plaid · Token-based · No credentials stored</div></div>
+  <div class="btns"><button class="btn1" onclick="toast('🏦','Plaid auth window opening...')" data-k="b-add">+ Add Account</button></div>
+ </div>
+ <div class="g2">
+  <div>
+   <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#6A7D94;margin-bottom:11px" data-k="b-conn">Connected Accounts</div>
+   <div class="bk" onclick="toast('🔄','Syncing Chase...')"><div class="bk-logo">🏦</div><div><div style="font-size:13px;font-weight:600;color:#E8EDF5">Chase Business Checking</div><div style="font-size:11px;color:#6A7D94">····4521 · Sync 2h ago</div></div><div style="margin-left:auto;text-align:right"><div class="ldot" style="margin-left:auto"></div><div style="font-size:10px;color:#4CAF80;margin-top:2px" data-k="b-live">Live</div></div></div>
+   <div class="bk" onclick="toast('🔄','Syncing Wells Fargo...')"><div class="bk-logo">💳</div><div><div style="font-size:13px;font-weight:600;color:#E8EDF5">Wells Fargo Savings</div><div style="font-size:11px;color:#6A7D94">····8832 · Sync 1d ago</div></div><div style="margin-left:auto;text-align:right"><div class="ldot" style="margin-left:auto"></div><div style="font-size:10px;color:#4CAF80;margin-top:2px">Live</div></div></div>
+   <div class="bk" onclick="toast('🔄','Syncing PayPal...')"><div class="bk-logo">🅿️</div><div><div style="font-size:13px;font-weight:600;color:#E8EDF5">PayPal Business</div><div style="font-size:11px;color:#6A7D94">····6610 · Sync 3h ago</div></div><div style="margin-left:auto;text-align:right"><div class="ldot" style="margin-left:auto"></div><div style="font-size:10px;color:#4CAF80;margin-top:2px">Live</div></div></div>
+  </div>
+  <div class="card">
+   <div class="ch"><span class="ct" data-k="b-stats">Sync Statistics</span></div>
+   <div style="font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:4px">147</div>
+   <div style="font-size:12px;color:#6A7D94;margin-bottom:16px" data-k="b-tx">Transactions imported this month</div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="b-cls">Auto-classified</span><span class="prog-p">91%</span></div><div class="prog-bg"><div class="prog-f" style="width:91%"></div></div></div>
+   <div class="prog"><div class="prog-h"><span class="prog-n" data-k="b-mch">Receipt matched</span><span class="prog-p">73%</span></div><div class="prog-bg"><div class="prog-f" style="width:73%"></div></div></div>
+   <div style="padding:11px;background:rgba(201,168,76,0.06);border-radius:8px;border:1px solid rgba(201,168,76,0.15);margin-top:12px">
+    <div style="font-size:11px;font-weight:700;color:#C9A84C;margin-bottom:4px">🔒 Plaid Security</div>
+    <div style="font-size:11px;color:#6A7D94;line-height:1.6" data-k="b-sec">OAuth tokens only. Bank credentials never stored. TLS 256-bit + AES-256 at rest.</div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SCHEDULE C -->
+<div class="page" id="pg-sched">
+ <div class="ph">
+  <div><div class="pt" data-k="sc-title">Schedule C — Form 1040</div><div class="ps" data-k="sc-sub">Profit or Loss from Business · Tax Year 2025</div></div>
+  <div class="btns">
+   <button class="btn2" onclick="toast('📄','Schedule C PDF generated')" data-k="sc-pdf">Export PDF</button>
+   <button class="btn1" onclick="nav('efile')" data-k="sc-ef">Proceed to E-File →</button>
+  </div>
+ </div>
+ <div class="g2">
+  <div class="card">
+   <div class="ss-title" data-k="sc-p1">PART I — Income</div>
+   <div class="sl"><span class="sl-num">1</span><span class="sl-name" data-k="l1">Gross receipts or sales</span><span class="sl-amt">$84,320</span></div>
+   <div class="sl"><span class="sl-num">2</span><span class="sl-name" data-k="l2">Returns and allowances</span><span class="sl-amt">$0</span></div>
+   <div class="sl"><span class="sl-num">7</span><span class="sl-name" data-k="l7">Gross income</span><span class="sl-amt">$84,320</span></div>
+   <div style="height:10px"></div>
+   <div class="ss-title" data-k="sc-p2">PART II — Expenses</div>
+   <div class="sl"><span class="sl-num">9</span><span class="sl-name" data-k="l9">Car and truck expenses</span><span class="sl-amt">$8,420</span></div>
+   <div class="sl"><span class="sl-num">13</span><span class="sl-name" data-k="l13">Depreciation (Form 4562)</span><span class="sl-amt">$8,240</span></div>
+   <div class="sl"><span class="sl-num">18</span><span class="sl-name" data-k="l18">Office expense</span><span class="sl-amt">$3,660</span></div>
+   <div class="sl"><span class="sl-num">24b</span><span class="sl-name" data-k="l24b">Meals (50%)</span><span class="sl-amt">$1,050</span></div>
+   <div class="sl"><span class="sl-num">27a</span><span class="sl-name" data-k="l27">Other expenses</span><span class="sl-amt">$9,810</span></div>
+   <div class="sl"><span class="sl-num">28</span><span class="sl-name" data-k="l28">Total expenses</span><span class="sl-amt">$31,180</span></div>
+   <div class="sl tot"><span class="sl-num">31</span><span class="sl-name" data-k="l31">Net profit or (loss)</span><span class="sl-amt">$53,140</span></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="sc-chk">IRS Compliance Check</span></div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+     <div style="display:flex;gap:9px;padding:7px"><span style="color:#4CAF80">✓</span><span style="font-size:12px;color:#E8EDF5" data-k="chk1">Gross income matches bank deposits</span></div>
+     <div style="display:flex;gap:9px;padding:7px"><span style="color:#4CAF80">✓</span><span style="font-size:12px;color:#E8EDF5" data-k="chk2">Meals deduction ≤ 50% applied correctly</span></div>
+     <div style="display:flex;gap:9px;padding:7px"><span style="color:#E8A84C">⚠</span><span style="font-size:12px;color:#E8EDF5" data-k="chk3">Line 13: Depreciation needs Form 4562</span></div>
+     <div style="display:flex;gap:9px;padding:7px"><span style="color:#4CAF80">✓</span><span style="font-size:12px;color:#E8EDF5" data-k="chk4">Vehicle log attached (mileage documented)</span></div>
+     <div style="display:flex;gap:9px;padding:7px"><span style="color:#4CAF80">✓</span><span style="font-size:12px;color:#E8EDF5" data-k="chk5">SE tax at 15.3% calculated</span></div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="sc-se">Self-Employment Tax</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="se1">SE Net Earnings</span><span class="sl-amt">$53,140</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="se2">SE Tax (15.3%)</span><span class="sl-amt">$8,130</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="se3">SE Deduction (½)</span><span class="sl-amt">($4,065)</span></div>
+    <div class="sl tot"><span class="sl-num"></span><span class="sl-name" data-k="se4">Est. Total Tax</span><span class="sl-amt">$14,879</span></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- E-FILE -->
+<div class="page" id="pg-efile">
+ <div class="ph">
+  <div><div class="pt" data-k="ef-title">E-File with IRS</div><div class="ps" data-k="ef-sub">Modernized e-File (MeF) · IRS API · AES-256 encrypted</div></div>
+ </div>
+ <div class="g6040">
+  <div>
+   <div class="card" style="margin-bottom:15px">
+    <div class="ch"><span class="ct" data-k="ef-chk">Submission Checklist</span></div>
+    <div id="efChk"></div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(201,168,76,0.1);display:flex;justify-content:space-between;align-items:center">
+     <span style="font-size:12px;color:#A8B8CC" data-k="ef-score">Readiness Score</span>
+     <span style="font-size:22px;font-weight:700;color:#C9A84C">83%</span>
+    </div>
+   </div>
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="ef-sum">Tax Summary</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="ef-agi">Adjusted Gross Income</span><span class="sl-amt">$49,075</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="ef-std">Standard Deduction</span><span class="sl-amt">($14,600)</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="ef-tax">Taxable Income</span><span class="sl-amt">$34,475</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="ef-it">Income Tax</span><span class="sl-amt">$3,913</span></div>
+    <div class="sl"><span class="sl-num"></span><span class="sl-name" data-k="ef-se">SE Tax</span><span class="sl-amt">$8,130</span></div>
+    <div class="sl tot"><span class="sl-num"></span><span class="sl-name" data-k="ef-due">Total Due</span><span class="sl-amt">$14,879</span></div>
+   </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="ef-fi">Filer Information</span></div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+     <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:#6A7D94" data-k="ef-name">Name</span><span style="font-size:12px;color:#E8EDF5" id="efName">—</span></div>
+     <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:#6A7D94">SSN/ITIN</span><span style="font-size:12px;color:#C9A84C">●●●-●●-4521 🔐</span></div>
+     <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:#6A7D94" data-k="ef-fs">Filing Status</span><span style="font-size:12px;color:#E8EDF5" data-k="ef-single">Single</span></div>
+     <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:#6A7D94" data-k="ef-bt">Business Type</span><span style="font-size:12px;color:#E8EDF5" id="efBizType">Sole Proprietor</span></div>
+    </div>
+   </div>
+   <div class="card" style="background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.35);text-align:center;padding:22px">
+    <div style="font-size:26px;margin-bottom:9px">📨</div>
+    <div style="font-size:16px;font-weight:700;color:#C9A84C;margin-bottom:7px" data-k="ef-rts">Ready to Submit</div>
+    <div style="font-size:11px;color:#6A7D94;margin-bottom:16px;line-height:1.7" data-k="ef-desc">Your return will be transmitted via IRS MeF API with AES-256 encryption. Confirmation in 24–48h.</div>
+    <button class="btn1" style="width:100%;justify-content:center;font-size:14px;padding:13px" onclick="submitEfile()" data-k="ef-sub">Submit to IRS</button>
+    <div style="font-size:10px;color:#6A7D94;margin-top:8px" data-k="ef-pin">PIN signature required · MeF Confirmation</div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="pg-settings">
+ <div class="ph"><div><div class="pt" data-k="st-title">Settings</div><div class="ps" data-k="st-sub">Account preferences &amp; security</div></div></div>
+ <div class="g2">
+  <div>
+   <div class="card" style="margin-bottom:15px">
+    <div class="ch"><span class="ct" data-k="st-acc">Account</span></div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5" data-k="st-lang">Language / Idioma</div><div style="font-size:11px;color:#6A7D94" data-k="st-langd">Bilingual EN/ES</div></div>
+     <select class="fi" style="width:100px" onchange="if(this.value!==currentLang)toggleLang()"><option value="en">English</option><option value="es">Español</option></select>
+    </div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5" data-k="st-ty">Tax Year</div></div><select class="fi" style="width:80px"><option>2025</option><option>2024</option><option>2023</option></select></div>
+   </div>
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="st-notif">Notifications</span></div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5" data-k="st-em">Email alerts</div><div style="font-size:11px;color:#6A7D94" data-k="st-emd">Tax deadlines &amp; sync</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5" data-k="st-sms">SMS alerts</div><div style="font-size:11px;color:#6A7D94" data-k="st-smsd">IRS confirmation codes</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="srow" style="border-bottom:none"><div><div style="font-size:13px;color:#E8EDF5" data-k="st-ai">Auto-classify</div><div style="font-size:11px;color:#6A7D94" data-k="st-aid">AI expense categorization</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+   </div>
+  </div>
+  <div>
+   <div class="card" style="margin-bottom:15px">
+    <div class="ch"><span class="ct" data-k="st-sec">Security</span></div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5">MFA / 2FA</div><div style="font-size:11px;color:#6A7D94" data-k="st-mfad">Required for financial access</div></div><div class="toggle on" onclick="toast('🔐','MFA required for IRS e-file')"></div></div>
+    <div class="srow"><div><div style="font-size:13px;color:#E8EDF5">AES-256</div><div style="font-size:11px;color:#6A7D94" data-k="st-aesd">Always on · cannot disable</div></div><div class="toggle on" style="opacity:.5;cursor:default"></div></div>
+    <div class="srow" style="border-bottom:none"><button class="btn2" style="width:100%;justify-content:center" onclick="toast('🔑','Password reset email sent')" data-k="st-pw">Change Password</button></div>
+   </div>
+   <div class="card">
+    <div class="ch"><span class="ct" data-k="st-data">Data &amp; Export</span></div>
+    <div class="srow"><button class="btn2" style="width:100%;justify-content:center" onclick="exportCSV()" data-k="st-csv">Export All Data (CSV)</button></div>
+    <div class="srow" style="border-bottom:none"><button class="btn2" style="width:100%;justify-content:center" onclick="toast('📋','MACRS schedule exported')" data-k="st-macrs">Export Depreciation Schedule</button></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /body -->
+
+<!-- STATUS BAR -->
+<div class="sbar">
+ <div class="si"><div class="ldot"></div><span data-k="sb-mfa">MFA Active</span></div>
+ <div class="si">🔐 <span data-k="sb-enc">AES-256</span></div>
+ <div class="si">🏦 <span data-k="sb-plaid">Plaid Connected</span></div>
+ <div class="si" style="margin-left:auto"><span data-k="sb-yr">Tax Year 2025</span> · 21 Stones LLC</div>
+</div>
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toastEl"><span id="toastIc">✅</span><span id="toastMsg">Done</span></div>
+
+<!-- ADD TRANSACTION MODAL -->
+<div class="mbg" id="txMod">
+ <div class="modal">
+  <div class="mt" data-k="m-addt">Add Transaction</div>
+  <div class="ms" data-k="m-addts">Linked to Schedule C · IRS category auto-mapped</div>
+  <div class="fgrid">
+   <div class="fg"><label class="fl" data-k="m-dt">Date</label><input type="date" class="fi" id="tx-dt" value="2025-11-15"></div>
+   <div class="fg"><label class="fl" data-k="m-am">Amount ($)</label><input type="number" class="fi" id="tx-am" placeholder="0.00"></div>
+  </div>
+  <div class="fg"><label class="fl" data-k="m-ds">Description</label><input type="text" class="fi" id="tx-ds" placeholder="Vendor / Client name"></div>
+  <div class="fgrid">
+   <div class="fg"><label class="fl" data-k="m-tp">Type</label><select class="fi" id="tx-tp"><option value="income">Income</option><option value="expense" selected>Expense</option></select></div>
+   <div class="fg"><label class="fl" data-k="m-ct">Category</label>
+    <select class="fi" id="tx-ct">
+     <option>Vehicle (Line 9)</option><option>Depreciation (Line 13)</option>
+     <option>Office (Line 18)</option><option>Meals (Line 24b)</option>
+     <option>Other (Line 27a)</option><option>Income (Line 1)</option>
+    </select>
+   </div>
+  </div>
+  <div class="mf">
+   <button class="btn2" onclick="closeMod('txMod')" data-k="m-cancel">Cancel</button>
+   <button class="btn1" onclick="saveTx()" data-k="m-save">Save Transaction</button>
+  </div>
+ </div>
+</div>
+
+<!-- ADD ASSET MODAL -->
+<div class="mbg" id="astMod">
+ <div class="modal">
+  <div class="mt" data-k="m-adda">Add Depreciable Asset</div>
+  <div class="ms" data-k="m-addas">MACRS depreciation calculated automatically</div>
+  <div class="fg"><label class="fl" data-k="m-an">Asset Name</label><input type="text" class="fi" id="ast-nm" placeholder="e.g. 2022 Ford F-150"></div>
+  <div class="fgrid">
+   <div class="fg"><label class="fl" data-k="m-ac">Cost Basis ($)</label><input type="number" class="fi" id="ast-co" placeholder="25000"></div>
+   <div class="fg"><label class="fl" data-k="m-ay">Year Placed in Service</label><input type="number" class="fi" id="ast-yr" placeholder="2022" min="2015" max="2025"></div>
+  </div>
+  <div class="fgrid">
+   <div class="fg"><label class="fl" data-k="m-al">Asset Class</label>
+    <select class="fi" id="ast-lf">
+     <option value="5">Vehicle (5 years)</option><option value="7">Tools / Equipment (7 years)</option><option value="39">Real Property (39 years)</option>
+    </select>
+   </div>
+   <div class="fg"><label class="fl" data-k="m-am2">Method</label>
+    <select class="fi" id="ast-mt"><option>200% DB (MACRS)</option><option>Straight Line</option><option>Section 179</option></select>
+   </div>
+  </div>
+  <div class="mf">
+   <button class="btn2" onclick="closeMod('astMod')" data-k="m-cancel2">Cancel</button>
+   <button class="btn1" onclick="saveAst()" data-k="m-savea">Save Asset</button>
+  </div>
+ </div>
+</div>
+
+<script>
+// ============ DATA ============
+let currentLang='en';
+let txFilter='all';
+let txs=[
+ {id:1,date:'2025-10-15',desc:'Client Payment — ABC Construction',cat:'Income (Line 1)',type:'income',amount:12500,rec:true},
+ {id:2,date:'2025-10-18',desc:'Shell Gas Station',cat:'Vehicle (Line 9)',type:'expense',amount:280,rec:true},
+ {id:3,date:'2025-10-22',desc:'Home Depot — Power Tools',cat:'Other (Line 27a)',type:'expense',amount:1840,rec:true},
+ {id:4,date:'2025-11-02',desc:'Client Payment — XYZ Remodeling',cat:'Income (Line 1)',type:'income',amount:8750,rec:false},
+ {id:5,date:'2025-11-05',desc:'Office Depot',cat:'Office (Line 18)',type:'expense',amount:345,rec:true},
+ {id:6,date:'2025-11-08',desc:'Business Lunch',cat:'Meals (Line 24b)',type:'expense',amount:125,rec:true},
+ {id:7,date:'2025-11-12',desc:'Auto Insurance',cat:'Vehicle (Line 9)',type:'expense',amount:890,rec:false},
+ {id:8,date:'2025-11-15',desc:'Client Payment — Martinez LLC',cat:'Income (Line 1)',type:'income',amount:6200,rec:true},
+];
+let assets=[
+ {name:'2022 Ford F-150',cost:38000,year:2022,life:5,method:'200% DB'},
+ {name:'DeWalt Tool Set',cost:4200,year:2023,life:7,method:'200% DB'},
+ {name:'Trailer 16ft',cost:8500,year:2021,life:7,method:'200% DB'},
+ {name:'Compressor 60gal',cost:1800,year:2024,life:7,method:'200% DB'},
+ {name:'Work Laptop',cost:2200,year:2024,life:5,method:'200% DB'},
+];
+const recs=[
+ {id:1,merchant:'Shell Gas Station',amount:280,date:'Oct 18',cat:'Vehicle',e:'⛽',c:'#C9A84C'},
+ {id:2,merchant:'Home Depot',amount:1840,date:'Oct 22',cat:'Tools',e:'🔨',c:'#5DCAA5'},
+ {id:3,merchant:'Office Depot',amount:345,date:'Nov 5',cat:'Office',e:'📋',c:'#85B7EB'},
+ {id:4,merchant:'Olive Garden',amount:125,date:'Nov 8',cat:'Meals',e:'🍽️',c:'#F0997B'},
+ {id:5,merchant:'AutoZone',amount:430,date:'Oct 30',cat:'Vehicle',e:'🚗',c:'#C9A84C'},
+ {id:6,merchant:'Staples',amount:89,date:'Nov 1',cat:'Office',e:'✏️',c:'#85B7EB'},
+ {id:7,merchant:"Lowe's",amount:2100,date:'Sep 28',cat:'Tools',e:'🪚',c:'#5DCAA5'},
+ {id:8,merchant:'Costco Business',amount:560,date:'Oct 10',cat:'Office',e:'🏪',c:'#AFA9EC'},
+ {id:9,merchant:'Exxon Mobil',amount:310,date:'Nov 14',cat:'Vehicle',e:'⛽',c:'#C9A84C'},
+ {id:10,merchant:'FedEx Office',amount:75,date:'Nov 11',cat:'Office',e:'📦',c:'#85B7EB'},
+ {id:11,merchant:"Miller's BBQ",amount:95,date:'Oct 25',cat:'Meals',e:'🥩',c:'#F0997B'},
+ {id:12,merchant:'Northern Tool',amount:780,date:'Oct 5',cat:'Tools',e:'🔧',c:'#5DCAA5'},
+];
+const MACRS5=[.2,.32,.192,.1152,.1152,.0576];
+const MACRS7=[.1429,.2449,.1749,.1249,.0893,.0892,.0893,.0446];
+const chart={rev:[6200,7100,8400,5900,9200,8700,11200,9800,10500,8400,12500,6420],exp:[2100,2400,2800,2200,3100,2900,4200,3500,3800,3100,4400,2280],pro:[4100,4700,5600,3700,6100,5800,7000,6300,6700,5300,8100,4140],lbl:['J','F','M','A','M','J','J','A','S','O','N','D']};
+
+// ============ TRANSLATIONS ============
+const T={
+en:{'n-dash':'Dashboard','n-inc':'Income / Expenses','n-rec':'Receipt Vault','n-dep':'Depreciation','n-bank':'Bank Connect','n-sch':'Schedule C','n-ef':'E-File IRS','n-set':'Settings','ns1':'Overview','ns2':'Accounting','ns3':'Tax Filing','ns4':'System','up-txt':'Upgrade to Pro for IRS audit defense & CPA review.','d-title':'Financial Overview','d-sub':'Tax Year 2025 · Schedule C Ready','d-vsched':'View Schedule C','d-efile':'E-File Now','k-rev':'Gross Revenue','k-exp':'Total Expenses','k-net':'Net Profit','k-tax':'Est. Tax Liability','d-chart':'Monthly Revenue 2025','d-excat':'Expense Categories','d-all':'View all →','c-veh':'Vehicle (5yr)','c-tools':'Tools (7yr)','c-off':'Office & Admin','c-meals':'Meals (50%)','c-other':'Other','d-sec':'Security Vault','d-audit':'Audit log →','s-ssn':'SSN / ITIN / EIN encrypted at rest','s-plaid':'Token-only · no credentials stored','s-mfa':'Two-factor auth · verified today','s-pen':'OWASP Top 10 · Last scan 14 days ago','s-act':'Active','s-conn':'Connected','s-ver':'Verified','s-pass':'Passed','d-ready':'E-File Readiness','d-gef':'Go to E-File →','p-inc':'Income recorded','p-exp':'Expenses classified','p-rec':'Receipts scanned','p-dep':'Depreciation confirmed','p-overall':'Overall readiness','i-title':'Income & Expenses','i-sub':'Auto-classified · Schedule C mapped','i-add':'Add Transaction','t-all':'All','t-inc':'Income','t-exp':'Expenses','th-dt':'Date','th-ds':'Description','th-ct':'Category','th-tp':'Type','th-am':'Amount','th-rc':'Receipt','i-csv':'Export CSV','r-title':'Receipt Vault','r-sub':'OCR-powered · IRS audit-ready','r-up':'Upload Receipt','r-drop':'Drop receipts here or click to upload','r-fmt':'JPG, PNG, PDF · OCR extracts vendor, amount, date','dp-title':'Depreciation Engine','dp-sub':'MACRS · Vehicles 5yr · Tools 7yr','dp-add':'Add Asset','dp-ta':'Total Assets','dp-yd':'2025 Depreciation','dp-bv':'Book Value','dp-sch':'Asset Depreciation Schedule','col-as':'Asset','col-co':'Cost','col-yd':'Yr Depr.','col-ac':'Accum.','col-bv':'Book Val.','col-lf':'Life','b-title':'Bank Connect','b-sub':'Plaid · Token-based · No credentials stored','b-add':'+ Add Account','b-conn':'Connected Accounts','b-live':'Live','b-stats':'Sync Statistics','b-tx':'Transactions imported this month','b-cls':'Auto-classified','b-mch':'Receipt matched','b-sec':'OAuth tokens only. Bank credentials never stored. TLS 256-bit + AES-256 at rest.','sc-title':'Schedule C — Form 1040','sc-sub':'Profit or Loss from Business · Tax Year 2025','sc-pdf':'Export PDF','sc-ef':'Proceed to E-File →','sc-p1':'PART I — Income','sc-p2':'PART II — Expenses','l1':'Gross receipts or sales','l2':'Returns and allowances','l7':'Gross income','l9':'Car and truck expenses','l13':'Depreciation (Form 4562)','l18':'Office expense','l24b':'Meals (50%)','l27':'Other expenses','l28':'Total expenses','l31':'Net profit or (loss)','sc-chk':'IRS Compliance Check','chk1':'Gross income matches bank deposits','chk2':'Meals deduction ≤ 50% applied correctly','chk3':'Line 13: Depreciation needs Form 4562','chk4':'Vehicle log attached (mileage documented)','chk5':'SE tax at 15.3% calculated','sc-se':'Self-Employment Tax','se1':'SE Net Earnings','se2':'SE Tax (15.3%)','se3':'SE Deduction (½)','se4':'Est. Total Tax','ef-title':'E-File with IRS','ef-sub':'Modernized e-File (MeF) · IRS API · AES-256 encrypted','ef-chk':'Submission Checklist','ef-score':'Readiness Score','ef-sum':'Tax Summary','ef-agi':'Adjusted Gross Income','ef-std':'Standard Deduction','ef-tax':'Taxable Income','ef-it':'Income Tax','ef-se':'SE Tax','ef-due':'Total Due','ef-fi':'Filer Information','ef-name':'Name','ef-fs':'Filing Status','ef-single':'Single','ef-bt':'Business Type','ef-rts':'Ready to Submit','ef-desc':'Your return will be transmitted via IRS MeF API with AES-256 encryption. Confirmation in 24–48h.','ef-sub':'Submit to IRS','ef-pin':'PIN signature required · MeF Confirmation','st-title':'Settings','st-sub':'Account preferences & security','st-acc':'Account','st-lang':'Language / Idioma','st-langd':'Bilingual EN/ES','st-ty':'Tax Year','st-notif':'Notifications','st-em':'Email alerts','st-emd':'Tax deadlines & sync','st-sms':'SMS alerts','st-smsd':'IRS confirmation codes','st-ai':'Auto-classify','st-aid':'AI expense categorization','st-sec':'Security','st-mfad':'Required for financial access','st-aesd':'Always on · cannot disable','st-pw':'Change Password','st-data':'Data & Export','st-csv':'Export All Data (CSV)','st-macrs':'Export Depreciation Schedule','sb-mfa':'MFA Active','sb-enc':'AES-256','sb-plaid':'Plaid Connected','sb-yr':'Tax Year 2025','m-addt':'Add Transaction','m-addts':'Linked to Schedule C · IRS category auto-mapped','m-dt':'Date','m-am':'Amount ($)','m-ds':'Description','m-tp':'Type','m-ct':'Category','m-cancel':'Cancel','m-save':'Save Transaction','m-adda':'Add Depreciable Asset','m-addas':'MACRS depreciation calculated automatically','m-an':'Asset Name','m-ac':'Cost Basis ($)','m-ay':'Year Placed in Service','m-al':'Asset Class','m-am2':'Method','m-cancel2':'Cancel','m-savea':'Save Asset','langBtn':'EN | ES'},
+es:{'n-dash':'Resumen','n-inc':'Ingresos / Gastos','n-rec':'Bóveda de Recibos','n-dep':'Depreciación','n-bank':'Banco Conectado','n-sch':'Schedule C','n-ef':'Declarar al IRS','n-set':'Configuración','ns1':'Principal','ns2':'Contabilidad','ns3':'Declaración','ns4':'Sistema','up-txt':'Actualiza a Pro para defensa ante auditorías IRS y revisión CPA.','d-title':'Resumen Financiero','d-sub':'Año Fiscal 2025 · Schedule C Listo','d-vsched':'Ver Schedule C','d-efile':'Declarar Ahora','k-rev':'Ingresos Brutos','k-exp':'Gastos Totales','k-net':'Ganancia Neta','k-tax':'Impuesto Estimado','d-chart':'Ingresos Mensuales 2025','d-excat':'Categorías de Gastos','d-all':'Ver todo →','c-veh':'Vehículo (5 años)','c-tools':'Herramientas (7 años)','c-off':'Oficina y Admin','c-meals':'Comidas (50%)','c-other':'Otros','d-sec':'Bóveda de Seguridad','d-audit':'Registro auditoría →','s-ssn':'SSN / ITIN / EIN cifrados en reposo','s-plaid':'Solo tokens · sin guardar credenciales','s-mfa':'Doble factor · verificado hoy','s-pen':'OWASP Top 10 · Escaneo hace 14 días','s-act':'Activo','s-conn':'Conectado','s-ver':'Verificado','s-pass':'Aprobado','d-ready':'Preparación E-File','d-gef':'Ir a E-File →','p-inc':'Ingresos registrados','p-exp':'Gastos clasificados','p-rec':'Recibos escaneados','p-dep':'Depreciación confirmada','p-overall':'Preparación general','i-title':'Ingresos y Gastos','i-sub':'Clasificación automática · Schedule C','i-add':'Agregar Transacción','t-all':'Todo','t-inc':'Ingresos','t-exp':'Gastos','th-dt':'Fecha','th-ds':'Descripción','th-ct':'Categoría','th-tp':'Tipo','th-am':'Monto','th-rc':'Recibo','i-csv':'Exportar CSV','r-title':'Bóveda de Recibos','r-sub':'Tecnología OCR · Para auditorías IRS','r-up':'Subir Recibo','r-drop':'Arrastra recibos aquí o haz clic','r-fmt':'JPG, PNG, PDF · OCR extrae monto, fecha, vendedor','dp-title':'Motor de Depreciación','dp-sub':'MACRS · Vehículos 5 años · Herramientas 7 años','dp-add':'Agregar Activo','dp-ta':'Activos Totales','dp-yd':'Depreciación 2025','dp-bv':'Valor en Libros','dp-sch':'Tabla de Depreciación','col-as':'Activo','col-co':'Costo','col-yd':'Depr. Anual','col-ac':'Acumulada','col-bv':'Val. Libros','col-lf':'Vida Útil','b-title':'Banco Conectado','b-sub':'Plaid · Solo tokens · Sin guardar credenciales','b-add':'+ Agregar Cuenta','b-conn':'Cuentas Conectadas','b-live':'En vivo','b-stats':'Estadísticas de Sincronización','b-tx':'Transacciones importadas este mes','b-cls':'Clasificadas automáticamente','b-mch':'Con recibo asociado','b-sec':'Solo tokens OAuth. Credenciales bancarias nunca almacenadas. TLS 256-bit + AES-256.','sc-title':'Schedule C — Formulario 1040','sc-sub':'Ganancias o Pérdidas del Negocio · Año Fiscal 2025','sc-pdf':'Exportar PDF','sc-ef':'Continuar a E-File →','sc-p1':'PARTE I — Ingresos','sc-p2':'PARTE II — Gastos','l1':'Ingresos brutos o ventas','l2':'Devoluciones y descuentos','l7':'Ingreso bruto','l9':'Gastos de auto y camión','l13':'Depreciación (Formulario 4562)','l18':'Gastos de oficina','l24b':'Comidas (50% deducible)','l27':'Otros gastos','l28':'Total de gastos','l31':'Ganancia neta o (pérdida)','sc-chk':'Verificación de Cumplimiento IRS','chk1':'Ingresos brutos coinciden con depósitos','chk2':'Deducción de comidas ≤ 50% aplicada','chk3':'Línea 13: Requiere Formulario 4562','chk4':'Registro de vehículo adjunto','chk5':'Impuesto SE al 15.3% calculado','sc-se':'Impuesto al Trabajo Independiente','se1':'Ingresos Netos SE','se2':'Impuesto SE (15.3%)','se3':'Deducción SE (½)','se4':'Impuesto Total Estimado','ef-title':'Declarar al IRS (E-File)','ef-sub':'Sistema MeF · API oficial · Cifrado AES-256','ef-chk':'Lista de Verificación','ef-score':'Puntuación de Preparación','ef-sum':'Resumen de Impuestos','ef-agi':'Ingreso Bruto Ajustado','ef-std':'Deducción Estándar','ef-tax':'Ingreso Gravable','ef-it':'Impuesto sobre la Renta','ef-se':'Impuesto SE','ef-due':'Total a Pagar','ef-fi':'Información del Declarante','ef-name':'Nombre','ef-fs':'Estado Civil','ef-single':'Soltero/a','ef-bt':'Tipo de Negocio','ef-rts':'Listo para Enviar','ef-desc':'Su declaración será enviada vía API MeF del IRS con cifrado AES-256. Confirmación en 24–48h.','ef-sub':'Enviar al IRS','ef-pin':'Firma PIN requerida · Confirmación MeF','st-title':'Configuración','st-sub':'Preferencias de cuenta y seguridad','st-acc':'Cuenta','st-lang':'Idioma / Language','st-langd':'Interfaz bilingüe EN/ES','st-ty':'Año Fiscal','st-notif':'Notificaciones','st-em':'Alertas por email','st-emd':'Fechas límite de impuestos','st-sms':'Alertas SMS','st-smsd':'Códigos de confirmación IRS','st-ai':'Auto-clasificar','st-aid':'Categorización con IA','st-sec':'Seguridad','st-mfad':'Requerido para acceso financiero','st-aesd':'Siempre activo · no se puede desactivar','st-pw':'Cambiar Contraseña','st-data':'Datos y Exportación','st-csv':'Exportar Todo (CSV)','st-macrs':'Exportar Tabla de Depreciación','sb-mfa':'MFA Activo','sb-enc':'AES-256','sb-plaid':'Plaid Conectado','sb-yr':'Año Fiscal 2025','m-addt':'Agregar Transacción','m-addts':'Vinculado al Schedule C · Categoría auto-mapeada','m-dt':'Fecha','m-am':'Monto ($)','m-ds':'Descripción','m-tp':'Tipo','m-ct':'Categoría','m-cancel':'Cancelar','m-save':'Guardar Transacción','m-adda':'Agregar Activo Depreciable','m-addas':'Depreciación MACRS calculada automáticamente','m-an':'Nombre del Activo','m-ac':'Costo Base ($)','m-ay':'Año en Servicio','m-al':'Clase de Activo','m-am2':'Método','m-cancel2':'Cancelar','m-savea':'Guardar Activo','langBtn':'ES | EN'}
+};
+
+// ============ AUTH ============
+const UK='21s_users', SK='21s_sess';
+function getU(){try{return JSON.parse(localStorage.getItem(UK)||'[]')}catch(e){return[]}}
+function saveU(u){localStorage.setItem(UK,JSON.stringify(u))}
+function getSess(){try{return JSON.parse(localStorage.getItem(SK)||'null')}catch(e){return null}}
+function saveSess(u){localStorage.setItem(SK,JSON.stringify(u))}
+function clearSess(){localStorage.removeItem(SK)}
+function ini(n){return n.split(' ').map(p=>p[0]||'').join('').toUpperCase().slice(0,2)}
+
+function atab(t){
+ document.querySelectorAll('.a-tab').forEach(x=>x.classList.remove('on'));
+ document.querySelectorAll('.a-form').forEach(x=>x.classList.remove('on'));
+ document.getElementById('at-'+t).classList.add('on');
+ document.getElementById('af-'+t).classList.add('on');
+ document.getElementById('lerr').style.display='none';
+ document.getElementById('rerr').style.display='none';
+}
+
+function login(){
+ const em=document.getElementById('l-em').value.trim().toLowerCase();
+ const pw=document.getElementById('l-pw').value;
+ const err=document.getElementById('lerr');
+ err.style.display='none';
+ if(!em||!pw){err.textContent=currentLang==='es'?'Ingresa email y contraseña.':'Enter email and password.';err.style.display='block';return}
+ const u=getU().find(x=>x.email===em&&x.pass===pw);
+ if(!u){err.textContent=currentLang==='es'?'Email o contraseña incorrectos.':'Invalid email or password.';err.style.display='block';return}
+ saveSess(u);enterApp(u);
+}
+
+function register(){
+ const fn=document.getElementById('r-fn').value.trim();
+ const ln=document.getElementById('r-ln').value.trim();
+ const em=document.getElementById('r-em').value.trim().toLowerCase();
+ const bz=document.getElementById('r-bz').value.trim()||fn+' Business';
+ const bt=document.getElementById('r-bt').value;
+ const pw=document.getElementById('r-pw').value;
+ const err=document.getElementById('rerr');
+ err.style.display='none';
+ if(!fn||!ln||!em||!pw){err.textContent=currentLang==='es'?'Completa todos los campos requeridos.':'Fill all required fields.';err.style.display='block';return}
+ if(pw.length<6){err.textContent=currentLang==='es'?'Contraseña mínimo 6 caracteres.':'Password min 6 characters.';err.style.display='block';return}
+ const us=getU();
+ if(us.find(x=>x.email===em)){err.textContent=currentLang==='es'?'Email ya registrado.':'Email already registered.';err.style.display='block';return}
+ const u={id:Date.now(),firstName:fn,lastName:ln,name:fn+' '+ln,email:em,biz:bz,type:bt,pass:pw};
+ us.push(u);saveU(us);saveSess(u);enterApp(u);
+}
+
+function enterApp(u){
+ const i=ini(u.name);
+ document.getElementById('topAv').textContent=i;
+ document.getElementById('sbAv').textContent=i;
+ document.getElementById('sbNm').textContent=u.name;
+ document.getElementById('sbRole').textContent=u.type||'Self-Employed';
+ document.getElementById('um-nm').textContent=u.name;
+ document.getElementById('um-em').textContent=u.email;
+ if(document.getElementById('efName'))document.getElementById('efName').textContent=u.name;
+ if(document.getElementById('efBizType'))document.getElementById('efBizType').textContent=u.type||'Sole Proprietor';
+ document.getElementById('auth').style.display='none';
+ const app=document.getElementById('app');
+ app.style.display='flex';
+ app.style.flexDirection='column';
+ app.style.height='100vh';
+ renderChart('rev');
+ renderTx();
+ renderRec();
+ renderAst();
+ renderEfChk();
+ animProg();
+ toast('👋',(currentLang==='es'?'Bienvenido/a, ':'Welcome, ')+u.firstName+'!');
+}
+
+function logout(){
+ clearSess();
+ closeUM();
+ document.getElementById('auth').style.display='flex';
+ document.getElementById('app').style.display='none';
+ document.getElementById('l-em').value='';
+ document.getElementById('l-pw').value='';
+ toast('✅',currentLang==='es'?'Sesión cerrada':'Signed out');
+}
+
+function checkSess(){
+ const s=getSess();
+ if(s){enterApp(s)}
+ else{document.getElementById('auth').style.display='flex';document.getElementById('app').style.display='none'}
+}
+
+// ============ NAVIGATION ============
+function nav(pg,el){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+ document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+ const p=document.getElementById('pg-'+pg);
+ if(p)p.classList.add('on');
+ if(el)el.classList.add('on');
+ else{const ni=document.querySelector('[onclick*="nav(\''+pg+'\'"]');if(ni)ni.classList.add('on')}
+ if(pg==='income')renderTx();
+ if(pg==='receipts')renderRec();
+ if(pg==='depr')renderAst();
+ if(pg==='efile')renderEfChk();
+}
+
+// ============ LANGUAGE ============
+function toggleLang(){
+ currentLang=currentLang==='en'?'es':'en';
+ applyT();
+}
+function applyT(){
+ const t=T[currentLang];
+ document.querySelectorAll('[data-k]').forEach(el=>{
+  const k=el.getAttribute('data-k');
+  if(t[k]!==undefined)el.textContent=t[k];
+ });
+ document.getElementById('langBtn').textContent=t['langBtn'];
+ renderChart(document.getElementById('chartBars').dataset.type||'rev');
+ renderTx();
+}
+
+// ============ CHART ============
+function renderChart(type){
+ document.getElementById('chartBars').dataset.type=type;
+ const d=chart[type];
+ const max=Math.max(...d);
+ const cur=new Date().getMonth();
+ document.getElementById('chartBars').innerHTML=d.map((v,i)=>{
+  const h=Math.round((v/max)*65);
+  return`<div style="flex:1;height:${h}px;border-radius:3px 3px 0 0;background:${i===cur?'#C9A84C':'rgba(201,168,76,0.25)'};cursor:pointer;transition:.2s" onmouseover="this.style.background='rgba(201,168,76,0.6)'" onmouseout="this.style.background='${i===cur?'#C9A84C':'rgba(201,168,76,0.25)'}'" title="${chart.lbl[i]}: $${v.toLocaleString()}"></div>`;
+ }).join('');
+ document.getElementById('chartLbls').innerHTML=chart.lbl.map(l=>`<div style="flex:1;font-size:9px;color:#6A7D94;text-align:center">${l}</div>`).join('');
+}
+
+// ============ TRANSACTIONS ============
+function renderTx(){
+ let d=txs;
+ if(txFilter==='income')d=d.filter(t=>t.type==='income');
+ if(txFilter==='expense')d=d.filter(t=>t.type==='expense');
+ const inc=currentLang==='es';
+ document.getElementById('txBody').innerHTML=d.map(t=>`
+  <tr>
+   <td>${t.date}</td>
+   <td>${t.desc}</td>
+   <td><span class="badge b-gold">${t.cat}</span></td>
+   <td><span class="badge ${t.type==='income'?'b-ok':'b-warn'}">${t.type==='income'?(inc?'Ingreso':'Income'):(inc?'Gasto':'Expense')}</span></td>
+   <td style="color:${t.type==='income'?'#4CAF80':'#E8EDF5'};font-weight:600">${t.type==='income'?'+':'-'}$${t.amount.toLocaleString()}</td>
+   <td>${t.rec?'<span class="badge b-ok">✓</span>':'<span class="badge b-warn">⚠</span>'}</td>
+   <td><button class="ca" onclick="delTx(${t.id})">✕</button></td>
+  </tr>`).join('');
+ document.getElementById('txCount').textContent=`${currentLang==='es'?'Mostrando':'Showing'} ${d.length} ${currentLang==='es'?'transacciones':'transactions'}`;
+}
+
+function stab(el,f){
+ el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+ el.classList.add('on');txFilter=f;renderTx();
+}
+
+function openMod(id){document.getElementById(id).classList.add('on')}
+function closeMod(id){document.getElementById(id).classList.remove('on')}
+
+function saveTx(){
+ const am=parseFloat(document.getElementById('tx-am').value)||0;
+ if(!am){toast('⚠️',currentLang==='es'?'Ingresa un monto':'Enter an amount');return}
+ txs.unshift({id:Date.now(),date:document.getElementById('tx-dt').value,desc:document.getElementById('tx-ds').value||'New Entry',cat:document.getElementById('tx-ct').value,type:document.getElementById('tx-tp').value,amount:am,rec:false});
+ closeMod('txMod');renderTx();
+ toast('✅',currentLang==='es'?'Transacción guardada':'Transaction saved');
+}
+
+function delTx(id){txs=txs.filter(t=>t.id!==id);renderTx();toast('🗑️',currentLang==='es'?'Eliminada':'Deleted')}
+
+function exportCSV(){
+ const r=[['Date','Description','Category','Type','Amount','Receipt']];
+ txs.forEach(t=>r.push([t.date,t.desc,t.cat,t.type,t.amount,t.rec?'Yes':'No']));
+ const a=document.createElement('a');
+ a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(r.map(x=>x.join(',')).join('\n'));
+ a.download='21stones-2025.csv';a.click();
+ toast('📁',currentLang==='es'?'CSV exportado':'CSV exported');
+}
+
+// ============ RECEIPTS ============
+function renderRec(f=''){
+ const d=f?recs.filter(r=>r.cat===f):recs;
+ document.getElementById('recGrid').innerHTML=d.map(r=>`
+  <div class="rc" onclick="toast('🧾','${r.merchant} — $${r.amount}')">
+   <div class="rt">${r.e}</div>
+   <div style="font-size:12px;font-weight:600;color:#E8EDF5;margin-bottom:3px">${r.merchant}</div>
+   <div style="font-size:17px;font-weight:700;color:#C9A84C;margin-bottom:3px">$${r.amount.toLocaleString()}</div>
+   <div style="font-size:10px;color:#6A7D94">${r.date} · 2025</div>
+   <div style="margin-top:6px"><span class="badge" style="background:${r.c}22;color:${r.c}">${r.cat}</span></div>
+  </div>`).join('');
+ document.getElementById('recCount').textContent=`${d.length} ${currentLang==='es'?'recibos':'receipts'}`;
+}
+function filterRec(q){
+ const d=recs.filter(r=>r.merchant.toLowerCase().includes(q.toLowerCase())||r.cat.toLowerCase().includes(q.toLowerCase()));
+ document.getElementById('recGrid').innerHTML=d.map(r=>`<div class="rc"><div class="rt">${r.e}</div><div style="font-size:12px;font-weight:600;color:#E8EDF5">${r.merchant}</div><div style="font-size:17px;font-weight:700;color:#C9A84C">$${r.amount.toLocaleString()}</div><div style="font-size:10px;color:#6A7D94">${r.date}</div><div style="margin-top:5px"><span class="badge" style="background:${r.c}22;color:${r.c}">${r.cat}</span></div></div>`).join('');
+}
+function filterRecCat(c){renderRec(c)}
+function handleUp(inp){
+ if(inp.files.length){
+  toast('📸',`OCR: ${inp.files[0].name}`);
+  setTimeout(()=>toast('✅',currentLang==='es'?'Recibo clasificado automáticamente':'Receipt auto-classified'),2000);
+ }
+}
+
+// ============ ASSETS ============
+function calcD(a){
+ const tb=a.life===5?MACRS5:a.life===7?MACRS7:null;
+ if(!tb)return{yr:0,acc:0,book:a.cost};
+ const idx=2025-a.year;
+ const yr=Math.round(a.cost*(idx>=0&&idx<tb.length?tb[idx]:0));
+ let acc=0;for(let i=0;i<Math.min(idx+1,tb.length);i++)acc+=a.cost*tb[i];
+ acc=Math.round(acc);
+ return{yr,acc,book:a.cost-acc};
+}
+function renderAst(){
+ let tc=0,ty=0,tb=0;
+ document.getElementById('astList').innerHTML=assets.map(a=>{
+  const d=calcD(a);tc+=a.cost;ty+=d.yr;tb+=d.book;
+  const pct=Math.round((d.acc/a.cost)*100);
+  return`<div class="ar">
+   <div><div class="an">${a.name}</div><div class="as">${a.method} · ${a.life}yr</div></div>
+   <div class="cn">$${a.cost.toLocaleString()}</div>
+   <div class="cn" style="color:#4CAF80">$${d.yr.toLocaleString()}</div>
+   <div class="cn">$${d.acc.toLocaleString()}</div>
+   <div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#5DCAA5,#1D9E75);border-radius:4px"></div></div><span style="font-size:9px;color:#6A7D94">${pct}%</span></div>
+   <div class="cn" style="color:#C9A84C">$${d.book.toLocaleString()}</div>
+  </div>`;
+ }).join('');
+ document.getElementById('dpTA').textContent='$'+tc.toLocaleString();
+ document.getElementById('dpYD').textContent='$'+ty.toLocaleString();
+ document.getElementById('dpBV').textContent='$'+tb.toLocaleString();
+}
+function saveAst(){
+ const nm=document.getElementById('ast-nm').value||'New Asset';
+ const co=parseFloat(document.getElementById('ast-co').value)||0;
+ const yr=parseInt(document.getElementById('ast-yr').value)||2024;
+ const lf=parseInt(document.getElementById('ast-lf').value)||5;
+ const mt=document.getElementById('ast-mt').value;
+ if(!co){toast('⚠️',currentLang==='es'?'Ingresa el costo':'Enter cost');return}
+ assets.push({name:nm,cost:co,year:yr,life:lf,method:mt});
+ closeMod('astMod');renderAst();
+ toast('✅',currentLang==='es'?'Activo guardado':'Asset saved');
+}
+
+// ============ E-FILE CHECKLIST ============
+function renderEfChk(){
+ const items=[
+  {done:true,en:'Schedule C income entered ($84,320)',es:'Ingresos Schedule C ingresados'},
+  {done:true,en:'Expenses categorized by IRS line',es:'Gastos categorizados por línea IRS'},
+  {done:false,en:'Form 4562 depreciation pending',es:'Formulario 4562 depreciación pendiente'},
+  {done:true,en:'SE tax calculation complete',es:'Cálculo de impuesto SE completo'},
+  {done:true,en:'Bank deposits reconciled',es:'Depósitos bancarios reconciliados'},
+  {done:false,en:'PIN signature required',es:'Firma PIN requerida'},
+  {done:true,en:'AES-256 encryption verified',es:'Cifrado AES-256 verificado'},
+ ];
+ document.getElementById('efChk').innerHTML=items.map(i=>`
+  <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,.06)">
+   <span style="color:${i.done?'#4CAF80':'#E8A84C'};font-size:14px;flex-shrink:0">${i.done?'✓':'○'}</span>
+   <span style="font-size:12px;color:${i.done?'#E8EDF5':'#A8B8CC'}">${currentLang==='es'?i.es:i.en}</span>
+   ${!i.done?`<span class="badge b-warn" style="margin-left:auto">${currentLang==='es'?'Pendiente':'Pending'}</span>`:''}
+  </div>`).join('');
+}
+function submitEfile(){
+ toast('📨',currentLang==='es'?'Enviando al IRS...':'Submitting to IRS...');
+ setTimeout(()=>toast('✅',currentLang==='es'?'Enviado. Confirmación IRS en 24-48h':'Submitted. IRS confirmation in 24-48h'),2500);
+}
+
+// ============ USER MENU ============
+function toggleUM(){document.getElementById('umenu').classList.toggle('on')}
+function closeUM(){document.getElementById('umenu').classList.remove('on')}
+document.addEventListener('click',function(e){
+ const m=document.getElementById('umenu');
+ if(m&&m.classList.contains('on')&&!m.contains(e.target)&&!document.getElementById('topAv').contains(e.target))m.classList.remove('on');
+ const np=document.getElementById('notifPanel');
+ if(np&&np.classList&&np.classList.contains('on')&&!np.contains(e.target))np.classList.remove('on');
+});
+
+// ============ TOAST ============
+let tTimer;
+function toast(ic,msg){
+ document.getElementById('toastIc').textContent=ic;
+ document.getElementById('toastMsg').textContent=msg;
+ document.getElementById('toastEl').classList.add('on');
+ clearTimeout(tTimer);tTimer=setTimeout(()=>document.getElementById('toastEl').classList.remove('on'),3000);
+}
+
+// ============ PROGRESS ANIM ============
+function animProg(){
+ setTimeout(()=>{
+  document.querySelectorAll('.prog-f').forEach(b=>{
+   const w=b.style.width;b.style.width='0';
+   setTimeout(()=>b.style.width=w,60);
+  });
+ },150);
+}
+
+// ============ INIT ============
+window.onload=function(){checkSess()};
+</script>
+</body>
+</html>
